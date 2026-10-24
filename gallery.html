@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Galerie photos – Pascal Bernier</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔧</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d1014;--bg2:#141920;--line:#232b35;--text:#eef1ea;--muted:#8f9aa6;--lime:#c9f31d;--amber:#ffb020;--head:'Chakra Petch',system-ui,sans-serif;--body:'Outfit',system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-weight:300;min-height:100vh}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(600px 400px at 85% 0%,rgba(201,243,29,.09),transparent 70%),linear-gradient(var(--line) 1px,transparent 1px) 0 0/48px 48px,linear-gradient(90deg,var(--line) 1px,transparent 1px) 0 0/48px 48px;-webkit-mask-image:linear-gradient(#000 30%,transparent);mask-image:linear-gradient(#000 30%,transparent)}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--lime);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+header{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);background:rgba(13,16,20,.72);border-bottom:1px solid var(--line)}
+nav{display:flex;align-items:center;justify-content:space-between;height:56px}
+.logo{font-family:var(--head);font-weight:700}.logo i{font-style:normal;color:var(--lime)}
+.btn{display:inline-flex;font-family:var(--head);font-weight:600;font-size:.88rem;padding:8px 18px;border-radius:999px;border:1px solid var(--line);background:var(--bg2);cursor:pointer;color:var(--text);transition:.2s}
+.btn:hover,.btn.on{border-color:var(--lime)}
+.btn.on{background:var(--lime);color:#10140a}
+h1{font-family:var(--head);font-size:clamp(1.7rem,4vw,2.6rem);margin:30px 0 6px}
+.sub{color:var(--muted);margin-bottom:18px}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.btn small{margin-left:8px;font-size:.72rem;opacity:.6}
+.empty{color:var(--muted);padding:40px 0;text-align:center;border:1px dashed var(--line);border-radius:16px}
+@media(max-width:700px){.filters{flex-wrap:nowrap;overflow-x:auto;padding-bottom:6px;scrollbar-width:none}.btn{white-space:nowrap}}
+.foot{text-align:center;color:var(--muted);font-size:.85rem;padding:0 0 28px}.foot a:hover{color:var(--lime)}
+.masonry{columns:3 280px;column-gap:12px;padding-bottom:50px}
+.item{break-inside:avoid;margin-bottom:12px;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:radial-gradient(circle at 50% 60%,#222b36,#12161c);cursor:zoom-in;position:relative;padding:14px;transition:transform .3s,border-color .3s}
+.item:hover{transform:translateY(-4px);border-color:rgba(201,243,29,.5)}
+.item img{width:100%;height:auto;display:block;transition:transform .5s;border-radius:8px}
+.item:hover img{transform:scale(1.04)}
+.item span{position:absolute;left:12px;bottom:10px;font-size:.78rem;background:rgba(13,16,20,.8);padding:4px 10px;border-radius:999px;border:1px solid var(--line)}
+.item.hide{display:none}
+.item.full{padding:0}
+.item.full img{border-radius:0}
+/* lightbox */
+#lb{position:fixed;inset:0;z-index:50;background:rgba(6,8,10,.92);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:24px}
+#lb.open{display:flex;animation:fade .25s}
+#lb img{max-width:94vw;max-height:82vh;object-fit:contain;animation:zoom .3s cubic-bezier(.2,.7,.2,1)}
+#lb p{position:absolute;bottom:22px;left:0;right:0;text-align:center;color:var(--muted)}
+#lb button{position:absolute;background:var(--bg2);border:1px solid var(--line);color:var(--text);width:44px;height:44px;border-radius:50%;font-size:1.2rem;cursor:pointer}
+#lb button:hover{border-color:var(--lime)}
+#x{top:18px;right:18px}#pv{left:18px}#nx{right:18px}
+@keyframes fade{from{opacity:0}}@keyframes zoom{from{transform:scale(.92);opacity:0}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><nav>
+  <a href="index.html" class="logo">BERNIER<i>.</i>PASCAL</a>
+  <a class="btn" href="index.html">← Retour au site</a>
+</nav></div></header>
+
+<main class="wrap">
+  <h1>Galerie photos</h1>
+  <p class="sub">Mes réalisations, mes véhicules et mes projets en cours.</p>
+  <div class="filters" id="filters" role="tablist"></div>
+  <p id="empty" class="empty" hidden>Photos de cette catégorie bientôt disponibles.</p>
+  <div class="masonry" id="grid"></div>
+</main>
+<footer class="foot"><a href="index.html">Accueil</a> · <a href="mentions.html">Mentions légales</a></footer>
+
+<div id="lb" role="dialog" aria-modal="true" aria-label="Photo agrandie">
+  <button id="x" aria-label="Fermer">✕</button><button id="pv" aria-label="Précédente">‹</button>
+  <img alt=""><button id="nx" aria-label="Suivante">›</button><p></p>
+</div>
+
+<script>
+
+/* ===== AJOUTER UNE PHOTO =====
+   1. Déposez le fichier dans images/
+   2. Ajoutez une ligne dans PHOTOS : { src, titre, cat: ["soudure", ...] }
+   Les catégories possibles sont les "id" de TABS ci-dessous. */
+const TABS = [
+  { id: "tout",          label: "Tout" },
+  { id: "soudure",       label: "Soudure" },
+  { id: "conception",    label: "Conception" },
+  { id: "impression-3d", label: "Impression 3D" },
+  { id: "mecanique",     label: "Mécanique" },
+  { id: "electricite",   label: "Électricité" },
+  { id: "electronique",  label: "Réparation électronique" },
+  { id: "voiture",       label: "Prêt de voiture" },
+  { id: "applications",  label: "Applications" },
+];
+
+const PHOTOS = [
+  // full: true = photo en plein cadre (sans fond détouré)
+  { src: "images/drift-trike.webp",        titre: "Drift trike thermique",       cat: ["soudure", "conception", "mecanique"] },
+  { src: "images/chopper-electrique.webp", titre: "Chopper électrique",          cat: ["soudure", "conception", "electricite", "mecanique"] },
+  { src: "images/trio.webp",               titre: "La gamme complète",           cat: ["soudure", "conception"] },
+  { src: "images/conception-v5.webp",      titre: "Conception 3D, version V5",   cat: ["conception"], full: true },
+
+  { src: "images/impression-3d-1.webp",    titre: "Impression 3D : aperçu de la pièce",            cat: ["impression-3d"], full: true },
+  { src: "images/impression-3d-2.webp",    titre: "Impression 3D : structure interne de la pièce", cat: ["impression-3d"], full: true },
+  { src: "images/moto-modif.webp",         titre: "Modification moto, sans modification de châssis", cat: ["mecanique", "impression-3d"], full: true },
+
+  { src: "images/lotus.webp",              titre: "Lotus Elise",                 cat: ["voiture"] },
+  { src: "images/portrait.webp",           titre: "Shooting avec la Lotus",      cat: ["voiture"] },
+  { src: "images/voiture-avant.webp",          titre: "Lotus Elise, vue avant",    cat: ["voiture"], full: true },
+  { src: "images/voiture-arriere.webp",        titre: "Lotus Elise, vue arrière",  cat: ["voiture"], full: true },
+  { src: "images/voiture-roue.webp",           titre: "Lotus Elise, détail jante", cat: ["voiture"], full: true },
+  { src: "images/voiture-arriere-detail.webp", titre: "Lotus Elise, feux arrière", cat: ["voiture"], full: true },
+
+  { src: "images/electronique-condensateurs.webp", titre: "Inspection de condensateurs au microscope", cat: ["electronique"], full: true },
+  { src: "images/electronique-circuit.webp",       titre: "Inspection d'un circuit intégré sur carte", cat: ["electronique"], full: true },
+
+  { src: "images/app-suivi-lames.webp",          titre: "Suivi des lames",                cat: ["applications"], full: true },
+  { src: "images/app-gestion-outils-multi.webp", titre: "Gestion des outils multi-machines", cat: ["applications"], full: true },
+  { src: "images/app-graphique-outils.webp",     titre: "Graphique des quantités et gestion des outils", cat: ["applications"] },
+];
+
+const grid = document.getElementById('grid'), filters = document.getElementById('filters'), empty = document.getElementById('empty');
+let visible = [], cur = 0;
+const count = id => PHOTOS.filter(p => id === 'tout' || p.cat.includes(id)).length;
+
+let currentId = 'tout';
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+function buildTabs() {
+  filters.innerHTML = '';
+  TABS.forEach(t => {
+    const b = document.createElement('button');
+    b.className = 'btn'; b.dataset.id = t.id; b.innerHTML = `${t.label} <small>${count(t.id)}</small>`;
+    b.onclick = () => { show(t.id); history.replaceState(null, '', t.id === 'tout' ? location.pathname : '#' + t.id); };
+    filters.appendChild(b);
+  });
+}
+
+function show(id) {
+  if (!TABS.some(t => t.id === id)) id = 'tout';
+  currentId = id;
+  filters.querySelectorAll('.btn').forEach(x => x.classList.toggle('on', x.dataset.id === id));
+  grid.innerHTML = ''; visible = PHOTOS.filter(p => id === 'tout' || p.cat.includes(id));
+  empty.hidden = visible.length > 0;
+  visible.forEach((p, i) => {
+    const d = document.createElement('div'); d.className = 'item' + (p.full ? ' full' : ''); d.tabIndex = 0;
+    d.innerHTML = `<img src="${esc(p.src)}" alt="${esc(p.titre)}" loading="lazy" decoding="async"><span>${esc(p.titre)}</span>`;
+    d.onclick = () => open(i); d.onkeydown = e => (e.key === 'Enter') && open(i);
+    grid.appendChild(d);
+  });
+  const on = filters.querySelector('.on'); on && on.scrollIntoView({ block: 'nearest', inline: 'center' });
+}
+
+/* ===== PHOTOS AJOUTÉES SANS CODE =====
+   Toute image déposée dans le dossier  galerie/<catégorie>/  du dépôt GitHub apparaît
+   automatiquement dans l'onglet correspondant (le nom du fichier devient le titre).
+   Catégories : soudure, conception, impression-3d, mecanique, electricite, electronique, voiture, applications
+   Une même photo déposée dans plusieurs dossiers apparaît dans plusieurs onglets.
+   REPO : à renseigner ("pseudo/nom-du-depot") seulement si le site n'est pas en xxx.github.io. */
+const REPO = "";
+const IMG_EXT = /\.(jpe?g|png|webp|gif|avif)$/i;
+function repoGuess() {
+  if (REPO) return REPO;
+  const h = location.hostname; if (!h.endsWith('.github.io')) return '';
+  const user = h.split('.')[0], part = location.pathname.split('/').filter(Boolean)[0];
+  return user + '/' + (part && !/\.html?$/i.test(part) ? part : user + '.github.io');
+}
+async function listRepoFiles(repo) {
+  const key = 'galerie:' + repo;
+  try { const c = sessionStorage.getItem(key); if (c) return JSON.parse(c); } catch (e) {}
+  for (const ref of ['HEAD', 'main', 'master']) {
+    try {
+      const r = await fetch(`https://api.github.com/repos/${repo}/git/trees/${ref}?recursive=1`);
+      if (!r.ok) continue;
+      const files = (await r.json()).tree.map(t => t.path);
+      try { sessionStorage.setItem(key, JSON.stringify(files)); } catch (e) {}
+      return files;
+    } catch (e) {}
+  }
+  return [];
+}
+async function loadFolderPhotos() {
+  const repo = repoGuess(); if (!repo) return;
+  const ids = TABS.map(t => t.id).filter(i => i !== 'tout');
+  const byName = new Map();
+  (await listRepoFiles(repo)).forEach(path => {
+    const m = path.match(/^galerie\/([^/]+)\/([^/]+)$/);
+    if (!m || !ids.includes(m[1]) || !IMG_EXT.test(m[2])) return;
+    const name = m[2].toLowerCase();
+    if (byName.has(name)) { byName.get(name).cat.push(m[1]); return; }
+    const titre = m[2].replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ').trim();
+    byName.set(name, { src: path.split('/').map(encodeURIComponent).join('/'), titre: titre.charAt(0).toUpperCase() + titre.slice(1), cat: [m[1]], full: true });
+  });
+  byName.forEach(p => PHOTOS.push(p));
+}
+
+const lb = document.getElementById('lb'), lbi = lb.querySelector('img'), lbp = lb.querySelector('p');
+function open(i) { cur = (i + visible.length) % visible.length; lbi.src = visible[cur].src; lbi.alt = visible[cur].titre; lbp.textContent = visible[cur].titre; lb.classList.add('open'); }
+const close = () => lb.classList.remove('open');
+document.getElementById('x').onclick = close;
+document.getElementById('pv').onclick = () => open(cur - 1);
+document.getElementById('nx').onclick = () => open(cur + 1);
+lb.onclick = e => e.target === lb && close();
+let tx = 0;
+lb.addEventListener('touchstart', e => tx = e.changedTouches[0].clientX, { passive: true });
+lb.addEventListener('touchend', e => { const d = e.changedTouches[0].clientX - tx; if (Math.abs(d) > 50) open(cur + (d < 0 ? 1 : -1)); }, { passive: true });
+addEventListener('keydown', e => { if (!lb.classList.contains('open')) return; if (e.key === 'Escape') close(); if (e.key === 'ArrowLeft') open(cur - 1); if (e.key === 'ArrowRight') open(cur + 1); });
+buildTabs();
+show(location.hash.slice(1) || 'tout');
+loadFolderPhotos().then(() => { buildTabs(); show(currentId); }).catch(() => {});
+addEventListener('hashchange', () => show(location.hash.slice(1) || 'tout'));
+</script>
+</body>
+</html>

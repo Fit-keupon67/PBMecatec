@@ -1,0 +1,2 @@
+Deposez ici les photos de la categorie : soudure
+Le nom du fichier devient le titre de la photo.

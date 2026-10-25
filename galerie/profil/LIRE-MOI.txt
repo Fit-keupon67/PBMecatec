@@ -1,0 +1,3 @@
+Photo de profil du site (page d'accueil et apercu de partage).
+Pour la changer : remplacez portrait.webp en gardant exactement ce nom.
+Ce dossier n'apparait pas dans la galerie.

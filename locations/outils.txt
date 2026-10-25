@@ -12,6 +12,12 @@ Prix: 30 € / jour
 Description: Cette bétonnière permet de mélanger du mortier, du béton, du plâtre et de la chape grâce à ses deux bras et ses différentes inclinaisons. Testée pour réaliser une gâchée de béton avec un demi sac de ciment de 35kg, soit 110 kg de béton. Puissant moteur électrique de 550W résistant à l'eau.
 Disponible: oui
 
+Photo: dechetterie.webp
+Titre: Trajet déchetterie
+Prix: 30 € / trajet
+Description: Coffre 300L pour petit meuble démonté, de la vaisselle, des vêtements, du bois ou du petit bazar de garage,...(+ Frais de nettoyage en cas de déchets très sales à discuter)
+Disponible: oui
+
 # Pour un deuxième outil, copiez le bloc ci-dessus sous cette ligne :
 #
 # Photo: meuleuse.jpg

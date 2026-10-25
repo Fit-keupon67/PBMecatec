@@ -16,7 +16,7 @@ Photo: coup-de-pouce.webp
 Titre: Besoin d'un coup de pouce ? 
 Prix: A discuter
 Description: Besoin d'un coup de pouce pour vos travaux, déménagements,...?)
-Disponible: non
+Disponible: oui
 
 Photo: media-Photoroom.png
 Titre: Bétonnière électrique 120L

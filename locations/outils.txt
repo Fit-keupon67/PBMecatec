@@ -7,10 +7,10 @@
 # ============================================================
 
 Photo: media-Photoroom.png
-Titre: Bétonnière électrique 120 l
-Prix: 30 € / jour
-Description: Cette bétonnière permet de mélanger du mortier, du béton, du plâtre et de la chape grâce à ses deux bras et ses différentes inclinaisons. Testée pour réaliser une gâchée de béton avec un demi sac de ciment de 35kg, soit 110 kg de béton. Puissant moteur électrique de 550W résistant à l'eau.
-Disponible: oui
+Titre: Exemple d'outil (à supprimer)
+Prix: 15 € / jour
+Description: Remplacez ce bloc par votre premier outil : une ou deux phrases suffisent. Indiquez ce qui est fourni (forets, câble, etc.).
+Disponible: non
 
 # Pour un deuxième outil, copiez le bloc ci-dessus sous cette ligne :
 #

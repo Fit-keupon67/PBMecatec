@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Location d'outils – PBMecatec</title>
+<meta name="description" content="Outils de l'atelier à louer : photos, descriptions et demande de location en ligne.">
+<meta name="theme-color" content="#0d1014">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔧</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d1014;--bg2:#141920;--line:#232b35;--text:#eef1ea;--muted:#8f9aa6;--lime:#c9f31d;--amber:#ffb020;--head:'Chakra Petch',system-ui,sans-serif;--body:'Outfit',system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-weight:300;line-height:1.5;min-height:100vh}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(600px 400px at 85% 0%,rgba(201,243,29,.09),transparent 70%),linear-gradient(var(--line) 1px,transparent 1px) 0 0/48px 48px,linear-gradient(90deg,var(--line) 1px,transparent 1px) 0 0/48px 48px;-webkit-mask-image:linear-gradient(#000 30%,transparent);mask-image:linear-gradient(#000 30%,transparent)}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--lime);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+h1,h2,h3{font-family:var(--head);letter-spacing:-.01em;line-height:1.1}
+header{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);background:rgba(13,16,20,.72);border-bottom:1px solid var(--line)}
+nav{display:flex;align-items:center;justify-content:space-between;height:56px}
+.logo{font-family:var(--head);font-weight:700}
+.tabs{display:flex;gap:6px}
+.tabs a{font-family:var(--head);font-weight:600;font-size:.85rem;padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:var(--bg2);color:var(--text);white-space:nowrap;transition:border-color .2s,background .2s}
+.tabs a:hover{border-color:var(--lime)}
+.tabs a[aria-current=page]{background:var(--lime);color:#10140a;border-color:var(--lime)}
+@media(max-width:900px){nav{flex-wrap:wrap;height:auto;padding:8px 0 10px;row-gap:8px}.tabs{order:3;width:100%;overflow-x:auto;scrollbar-width:none}}
+.btn{display:inline-flex;align-items:center;gap:8px;font:inherit;font-family:var(--head);font-weight:600;font-size:.95rem;padding:11px 20px;border-radius:999px;border:1px solid var(--line);background:var(--bg2);color:var(--text);cursor:pointer;transition:transform .2s,box-shadow .2s,border-color .2s}
+.btn:hover{transform:translateY(-2px);border-color:var(--lime)}
+.btn.main{background:var(--lime);color:#10140a;border-color:var(--lime)}
+.btn.main:hover{box-shadow:0 8px 30px rgba(201,243,29,.35)}
+.btn.sm{padding:7px 16px;font-size:.85rem}
+.btn[disabled]{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+h1{font-size:clamp(1.8rem,4vw,2.6rem);margin:30px 0 8px}
+.sub{color:var(--muted);margin-bottom:22px;max-width:62ch}
+.box{background:var(--bg2);border:1px solid var(--line);border-radius:18px;padding:18px 22px}
+.empty{color:var(--muted);padding:40px 20px;text-align:center;border:1px dashed var(--line);border-radius:16px}
+.foot{text-align:center;color:var(--muted);font-size:.85rem;padding:30px 0 28px}.foot a:hover{color:var(--lime)}
+form{display:grid;gap:10px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+input,select,textarea{width:100%;font:inherit;font-size:.92rem;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;transition:border-color .2s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--lime)}
+textarea{resize:vertical;min-height:70px}
+.hp{position:absolute!important;left:-9999px;width:1px;height:1px;opacity:0}
+.st{font-size:.85rem;min-height:1.2em}
+.legal{font-size:.75rem;color:var(--muted);line-height:1.4}.legal a{text-decoration:underline}
+@media(max-width:520px){.row{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.tools{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;padding-bottom:10px}
+.tool{display:flex;flex-direction:column;background:var(--bg2);border:1px solid var(--line);border-radius:16px;overflow:hidden;transition:transform .25s,border-color .25s}
+.tool:hover{transform:translateY(-3px);border-color:rgba(201,243,29,.5)}
+.ph{aspect-ratio:4/3;display:grid;place-items:center;font-size:2.6rem;background:radial-gradient(circle at 50% 60%,#222b36,#12161c);cursor:zoom-in;position:relative;border:0;width:100%;color:inherit}
+.ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tool .bd{display:flex;flex-direction:column;gap:6px;padding:14px 16px 16px;flex:1}
+.tool h3{font-size:1.1rem}
+.tool p{color:var(--muted);font-size:.9rem}
+.ft{margin-top:auto;padding-top:10px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.px{font-family:var(--head);font-weight:600;color:var(--lime)}
+.badge{font-size:.72rem;font-family:var(--head);font-weight:600;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:2px 10px}
+.tool.off .ph img{filter:grayscale(1) opacity(.55)}
+dialog{margin:auto;background:var(--bg2);color:var(--text);border:1px solid var(--line);border-radius:18px;padding:20px 22px;width:min(480px,calc(100% - 32px));max-height:calc(100% - 32px);overflow:auto}
+dialog::backdrop{background:rgba(6,8,10,.82);backdrop-filter:blur(6px)}
+dialog h2{font-size:1.3rem;margin-bottom:12px}
+.dhead{display:flex;justify-content:space-between;align-items:start;gap:12px}
+.x{background:var(--bg);border:1px solid var(--line);color:var(--text);width:34px;height:34px;border-radius:50%;cursor:pointer;flex:none}.x:hover{border-color:var(--lime)}
+#zoom{padding:0;background:none;border:0;width:auto;max-width:94vw;overflow:visible}
+#zoom img{display:block;max-width:94vw;max-height:84vh;border-radius:12px;cursor:zoom-out}
+#zoom p{text-align:center;color:var(--muted);margin-top:8px}
+</style>
+</head>
+<body>
+<header><div class="wrap"><nav aria-label="Navigation principale">
+  <a href="index.html" class="logo">PBMecatec</a>
+  <div class="tabs" aria-label="Pages du site"><a href="index.html">Accueil</a><a href="gallery.html">Galerie photos</a><a href="locations.html" aria-current="page">Locations</a><a href="dons.html">J'accepte vos dons</a></div>
+</nav></div></header>
+
+<main class="wrap">
+  <h1>Location d'outils</h1>
+  <p class="sub">Des outils de mon atelier à louer. Choisissez celui qui vous intéresse et envoyez une demande : je vous confirme la disponibilité, le tarif et les conditions par e-mail.</p>
+  <p id="load" class="empty">Chargement des outils…</p>
+  <div class="tools" id="grid"></div>
+  <p id="empty" class="empty" hidden>Aucun outil à louer pour le moment. Écrivez-moi si vous cherchez quelque chose de précis.</p>
+</main>
+<footer class="foot"><a href="index.html">Accueil</a> · <a href="mentions.html">Mentions légales</a></footer>
+
+<dialog id="dlg" aria-labelledby="dTitle">
+  <div class="dhead"><h2 id="dTitle">Demande de location</h2><button class="x" type="button" id="dx" aria-label="Fermer">✕</button></div>
+  <form id="f">
+    <div class="row"><input name="nom" placeholder="Votre nom" required aria-label="Votre nom" autocomplete="name"><input name="email" type="email" placeholder="Votre e-mail" required aria-label="Votre e-mail" autocomplete="email"></div>
+    <div class="row"><input name="tel" type="tel" placeholder="Téléphone (facultatif)" aria-label="Téléphone (facultatif)" autocomplete="tel"><input name="dates" placeholder="Dates souhaitées" required aria-label="Dates souhaitées"></div>
+    <textarea name="msg" placeholder="Précisions (facultatif)" maxlength="1500" aria-label="Précisions"></textarea>
+    <input class="hp" name="site" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <button class="btn main" type="submit">Envoyer la demande</button>
+    <p class="st" id="st" role="status"></p>
+    <p class="legal">En envoyant ce formulaire, vous acceptez que ces informations me soient transmises pour répondre à votre demande. <a href="mentions.html#donnees">En savoir plus</a></p>
+  </form>
+</dialog>
+
+<dialog id="zoom" aria-label="Photo agrandie"><img alt=""><p></p></dialog>
+
+<script>
+/* ===== AJOUTER UN OUTIL À LOUER =====
+   MÉTHODE SIMPLE (sans code) : déposez dans le dossier  locations/  du dépôt GitHub
+     - la photo de l'outil, par exemple  perceuse-a-colonne.jpg
+     - (facultatif) un fichier texte du même nom,  perceuse-a-colonne.txt , contenant :
+         Titre: Perceuse à colonne
+         Prix: 15 € / jour
+         Description: Puissante, idéale pour percer l'acier. Livrée avec un jeu de forets.
+         Disponible: oui
+     L'outil apparaît tout seul sur cette page. Sans fichier texte, le nom du fichier sert de titre.
+     Ces photos ne sont JAMAIS dans la galerie photos : elles restent dans le dossier locations/.
+   MÉTHODE MANUELLE (secours) : ajoutez une ligne dans la liste ci-dessous. */
+const OUTILS = [
+  // { photo: "locations/perceuse-a-colonne.jpg", nom: "Perceuse à colonne", desc: "Idéale pour percer l'acier.", prix: "15 € / jour", dispo: true },
+];
+
+// ===== SERVICE D'ENVOI : même adresse que sur index.html (à changer aux deux endroits si elle change) =====
+const API_URL = "https://script.google.com/macros/s/AKfycbxAvpIE5mm2_YU8y0mAQCIhU3_s0dXIjdkQSBktzFI7EE1-sNMc3c_iev1NuF9rVsf2/exec";
+const EMAIL = "PBMecatec@hotmail.com";
+const T0 = Date.now();
+function envoyer(type, data) {
+  return new Promise((resolve, reject) => {
+    const name = 'tx' + Date.now();
+    const ifr = document.createElement('iframe'); ifr.name = name; ifr.title = 'envoi'; ifr.style.display = 'none'; ifr.setAttribute('aria-hidden', 'true');
+    const form = document.createElement('form'); form.method = 'POST'; form.action = API_URL; form.target = name; form.acceptCharset = 'UTF-8'; form.style.display = 'none';
+    const inp = document.createElement('input'); inp.type = 'hidden'; inp.name = 'payload'; inp.value = JSON.stringify({ type, delay: Date.now() - T0, ...data });
+    form.appendChild(inp); document.body.append(ifr, form);
+    const t1 = Date.now(); let done = false, tm;
+    const end = err => { if (done) return; done = true; clearTimeout(tm); setTimeout(() => { ifr.remove(); form.remove(); }, 500); err ? reject(new Error(err)) : resolve(); };
+    ifr.addEventListener('load', () => { if (Date.now() - t1 > 300) end(); });
+    tm = setTimeout(() => end('délai dépassé'), 25000);
+    form.submit();
+  });
+}
+const say = (el, txt, ok) => { el.textContent = txt; el.style.color = ok ? 'var(--lime)' : '#ff8a7a'; };
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+const IMG_EXT = /\.(jpe?g|png|webp|gif|avif)$/i;
+const grid = document.getElementById('grid'), emptyEl = document.getElementById('empty'), loadEl = document.getElementById('load');
+let tools = [];
+
+function repoGuess() {
+  const h = location.hostname; if (!h.endsWith('.github.io')) return '';
+  const user = h.split('.')[0], part = location.pathname.split('/').filter(Boolean)[0];
+  return user + '/' + (part && !/\.html?$/i.test(part) ? part : user + '.github.io');
+}
+async function listRepoFiles(repo) {
+  const key = 'galerie:' + repo, TTL = 60000;
+  try { const c = JSON.parse(sessionStorage.getItem(key) || 'null'); if (c && Date.now() - c.t < TTL) return c.files; } catch (e) {}
+  for (const ref of ['HEAD', 'main', 'master']) {
+    try {
+      const r = await fetch(`https://api.github.com/repos/${repo}/git/trees/${ref}?recursive=1`, { cache: 'no-store' });
+      if (!r.ok) continue;
+      const files = (await r.json()).tree.map(t => t.path);
+      try { sessionStorage.setItem(key, JSON.stringify({ t: Date.now(), files })); } catch (e) {}
+      return files;
+    } catch (e) {}
+  }
+  return [];
+}
+function parseTxt(t) {
+  const map = { titre: 'nom', nom: 'nom', prix: 'prix', description: 'desc', desc: 'desc', dispo: 'dispo', disponible: 'dispo' };
+  const o = {}; let cur = 'desc';
+  t.replace(/^\uFEFF/, '').split(/\r?\n/).forEach(l => {
+    const m = l.match(/^\s*(titre|nom|prix|description|desc|disponible|dispo)\s*:\s*(.*)$/i);
+    if (m) { cur = map[m[1].toLowerCase()]; o[cur] = m[2].trim(); }
+    else if (l.trim()) o[cur] = ((o[cur] || '') + ' ' + l.trim()).trim();
+  });
+  if (o.dispo !== undefined) o.dispo = !/^(non|no|0|faux|indispo|lou)/i.test(o.dispo);
+  return o;
+}
+const enc = p => p.split('/').map(encodeURIComponent).join('/');
+async function loadFolder() {
+  const repo = repoGuess(); if (!repo) return [];
+  const files = await Promise.race([listRepoFiles(repo), new Promise(r => setTimeout(() => r([]), 3000))]);
+  const pics = files.filter(p => /^locations\/[^/]+$/i.test(p) && IMG_EXT.test(p));
+  return Promise.all(pics.map(async p => {
+    const base = p.replace(/\.[^.]+$/, ''), txt = files.find(f => f.toLowerCase() === (base + '.txt').toLowerCase());
+    let meta = {};
+    if (txt) { try { const r = await fetch(enc(txt), { cache: 'no-store' }); if (r.ok) meta = parseTxt(await r.text()); } catch (e) {} }
+    const t = base.split('/').pop().replace(/[-_]+/g, ' ').trim();
+    return { raw: p, photo: enc(p), nom: meta.nom || t.charAt(0).toUpperCase() + t.slice(1), desc: meta.desc || '', prix: meta.prix || '', dispo: meta.dispo !== false };
+  }));
+}
+
+function render() {
+  loadEl.hidden = true; emptyEl.hidden = tools.length > 0; grid.innerHTML = '';
+  tools.forEach((o, i) => {
+    const a = document.createElement('article'); a.className = 'tool' + (o.dispo ? '' : ' off');
+    a.innerHTML = `<button class="ph" type="button" data-zoom="${i}" aria-label="Agrandir la photo : ${esc(o.nom)}">🧰${o.photo ? `<img src="${esc(o.photo)}" alt="${esc(o.nom)}" loading="lazy" decoding="async" onerror="this.remove()">` : ''}</button>
+      <div class="bd"><h3>${esc(o.nom)}</h3>${o.desc ? `<p>${esc(o.desc)}</p>` : ''}
+      <div class="ft">${o.dispo ? (o.prix ? `<span class="px">${esc(o.prix)}</span>` : '<span class="badge">Tarif sur demande</span>') : '<span class="badge">Actuellement indisponible</span>'}
+      <button class="btn main sm" type="button" data-ask="${i}" ${o.dispo ? '' : 'disabled'}>Demander</button></div></div>`;
+    grid.appendChild(a);
+  });
+}
+
+const dlg = document.getElementById('dlg'), zoom = document.getElementById('zoom'), f = document.getElementById('f'), st = document.getElementById('st');
+let cur = null;
+grid.addEventListener('click', e => {
+  const z = e.target.closest('[data-zoom]'), q = e.target.closest('[data-ask]');
+  if (z) { const o = tools[+z.dataset.zoom]; if (!o.photo) return; const im = zoom.querySelector('img'); im.src = o.photo; im.alt = o.nom; zoom.querySelector('p').textContent = o.nom; zoom.showModal(); }
+  if (q && !q.disabled) { cur = tools[+q.dataset.ask]; document.getElementById('dTitle').textContent = 'Louer : ' + cur.nom; st.textContent = ''; dlg.showModal(); }
+});
+zoom.addEventListener('click', () => zoom.close());
+document.getElementById('dx').onclick = () => dlg.close();
+dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
+
+f.addEventListener('submit', async e => {
+  e.preventDefault();
+  const x = f.elements, btn = f.querySelector('button[type=submit]');
+  if (!API_URL) return say(st, "L'envoi en ligne n'est pas activé. Écrivez-moi à " + EMAIL + ".", false);
+  btn.disabled = true; say(st, 'Envoi en cours…', true);
+  try {
+    await envoyer('devis', { nom: x.nom.value, email: x.email.value, tel: x.tel.value, sujet: "Location d'outil : " + cur.nom, msg: 'Outil : ' + cur.nom + '\nDates souhaitées : ' + x.dates.value + (x.msg.value ? '\n\n' + x.msg.value : ''), site: x.site.value });
+    f.reset(); say(st, 'Merci ! Votre demande est envoyée, je vous réponds rapidement.', true);
+  } catch (err) { say(st, "Envoi impossible pour le moment. Écrivez-moi à " + EMAIL + ". (détail : " + err.message + ")", false); }
+  btn.disabled = false;
+});
+
+const norm = o => ({ raw: (o.photo || '').toLowerCase(), photo: o.photo ? enc(o.photo) : '', nom: o.nom || 'Outil', desc: o.desc || '', prix: o.prix || '', dispo: o.dispo !== false });
+tools = OUTILS.map(norm); render(); loadEl.hidden = false;
+loadFolder().then(extra => {
+  const known = new Set(tools.map(t => t.raw));
+  tools = tools.concat(extra.filter(x => !known.has(x.raw.toLowerCase())));
+}).catch(() => {}).finally(render);
+</script>
+</body>
+</html>

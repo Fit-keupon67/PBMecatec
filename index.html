@@ -391,12 +391,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbx69FNamZd7X3rpJNBRrPo9
 
 const T0 = Date.now();
 async function envoyer(type, data) {
-  let r, j;
-  try { r = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ type, delay: Date.now() - T0, ...data }) }); }
+  /* mode no-cors : la requête part sans que le navigateur ait à lire la réponse de Google (qui est souvent bloquée sur GitHub Pages) */
+  try { await fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ type, delay: Date.now() - T0, ...data }) }); }
   catch (e) { throw new Error('réseau : ' + e.message); }
-  try { j = await r.json(); } catch (e) { throw new Error('réponse illisible, HTTP ' + r.status); }
-  if (!j.ok) throw new Error(j.error || 'refusé par le service');
-  return j;
 }
 const say = (el, txt, ok) => { el.textContent = txt; el.style.color = ok ? 'var(--lime)' : '#ff8a7a'; };
 

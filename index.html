@@ -194,6 +194,22 @@ nav ul a.act{color:var(--lime)}
 @media(max-width:900px){.steps{grid-template-columns:1fr 1fr}}
 @media(max-width:520px){.steps{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none}}
+
+/* avis + formulaires */
+.hp{position:absolute!important;left:-9999px;width:1px;height:1px;opacity:0}
+.st{font-size:.85rem;min-height:1.2em}
+.legal{font-size:.75rem;color:var(--muted);line-height:1.4}.legal a{text-decoration:underline}
+input[type=checkbox]{width:auto;margin-top:3px;accent-color:var(--lime)}
+.chk{display:flex;gap:8px;align-items:flex-start;font-size:.8rem;color:var(--muted)}
+.avisform{max-width:560px;margin:14px auto 0}
+.lbl{display:block;color:var(--muted);font-size:.78rem;margin-bottom:2px}
+.rate{display:flex;gap:2px}
+.rate button{font-size:1.7rem;line-height:1;background:none;border:0;color:var(--star-off);cursor:pointer;padding:2px 3px;transition:color .15s,transform .15s}
+.rate button.on{color:var(--amber)}.rate button:hover{transform:scale(1.15)}
+.noav{text-align:center;color:var(--muted);padding:6px 0}
+.avis .rev .stars{font-size:1rem}
+#avisBtn[aria-expanded=true]{border-color:var(--lime)}
+.avis{margin-bottom:6px}
 </style>
 </head>
 <body>
@@ -268,8 +284,19 @@ nav ul a.act{color:var(--lime)}
 
   <section id="avis" hidden>
     <div class="wrap">
-      <div class="sec-head"><h2>Avis clients</h2><p>Retours de personnes que j'ai accompagnées.</p></div>
+      <div class="sec-head"><h2>Avis clients</h2><p id="avisSum">Retours de personnes que j'ai accompagnées.</p></div>
       <div class="avis" id="avisList"></div>
+      <p class="noav" id="avisEmpty" hidden>Aucun avis pour le moment : soyez le premier à en laisser un !</p>
+      <div class="more"><button class="btn" id="avisBtn" type="button" aria-expanded="false" aria-controls="avisForm">Laisser un avis</button></div>
+      <form id="avisForm" class="box avisform" hidden>
+        <div><small class="lbl">Votre note</small><div class="rate" id="rate" role="group" aria-label="Note de 1 à 5 étoiles"></div></div>
+        <input name="nom" placeholder="Prénom et initiale (ex. Marie D.)" maxlength="40" required aria-label="Prénom et initiale" autocomplete="given-name">
+        <textarea name="texte" placeholder="Votre avis (10 caractères minimum)" minlength="10" maxlength="600" required aria-label="Votre avis"></textarea>
+        <input class="hp" name="site" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <label class="chk"><input type="checkbox" name="consent" required> J'accepte que mon prénom, ma note et mon avis soient publiés sur ce site après validation.</label>
+        <button class="btn main" type="submit">Envoyer mon avis</button>
+        <p class="st" id="avisMsg" role="status"></p>
+      </form>
     </div>
   </section>
 
@@ -335,13 +362,16 @@ nav ul a.act{color:var(--lime)}
         </div>
         <div class="box">
           <form id="f">
-            <div class="row"><input name="nom" placeholder="Votre nom" required aria-label="Votre nom" autocomplete="name"><input name="contact" placeholder="Votre e-mail ou téléphone" required aria-label="Votre e-mail ou téléphone" autocomplete="email"></div>
+            <div class="row"><input name="nom" placeholder="Votre nom" required aria-label="Votre nom" autocomplete="name"><input name="email" type="email" placeholder="Votre e-mail" required aria-label="Votre e-mail" autocomplete="email"></div>
+            <div class="row"><input name="tel" type="tel" placeholder="Téléphone (facultatif)" aria-label="Téléphone (facultatif)" autocomplete="tel">
             <select name="sujet" aria-label="Type de demande">
               <option>Soudure</option><option>Conception</option><option>Impression 3D</option><option>Mécanique</option><option>Électricité</option><option>Réparation électronique</option><option>Prêt de voiture (shooting)</option><option>Application de gestion</option><option>Autre</option>
-            </select>
-            <textarea name="msg" placeholder="Décrivez votre besoin" required aria-label="Votre message"></textarea>
+            </select></div>
+            <textarea name="msg" placeholder="Décrivez votre besoin" required minlength="5" maxlength="2000" aria-label="Votre message"></textarea>
+            <input class="hp" name="site" tabindex="-1" autocomplete="off" aria-hidden="true">
             <button class="btn main" type="submit">Envoyer la demande</button>
-            <p id="msg" role="status"></p>
+            <p class="st" id="msg" role="status"></p>
+            <p class="legal">En envoyant ce formulaire, vous acceptez que ces informations me soient transmises pour répondre à votre demande. <a href="mentions.html#donnees">En savoir plus</a></p>
           </form>
         </div>
       </div>
@@ -354,20 +384,63 @@ nav ul a.act{color:var(--lime)}
 <div class="callbar"><a class="btn" href="mailto:PBMecatec@hotmail.com">Écrire</a><a class="btn main" href="#contact">Demander un devis</a></div>
 
 <script>
-// --- AVIS CLIENTS : uniquement de vrais avis, avec l'accord de la personne ---
-// Format : { nom: "Prénom N.", note: 5, texte: "Son avis.", date: "Octobre 2026" }
-// Tant que la liste est vide, la section reste cachée.
-const AVIS = [];
-if (AVIS.length) {
-  const box = document.getElementById('avisList');
-  AVIS.forEach(a => {
-    const d = document.createElement('article'); d.className = 'rev';
-    d.innerHTML = `<div class="stars on" style="--v:${a.note}"></div><p></p><b></b> <small></small>`;
-    d.querySelector('p').textContent = a.texte; d.querySelector('b').textContent = a.nom; d.querySelector('small').textContent = a.date || '';
-    box.appendChild(d);
-  });
-  document.getElementById('avis').hidden = false;
+// ===== SERVICE D'ENVOI : demandes de devis + avis clients =====
+// Collez entre les guillemets l'adresse du « déploiement web » Google Apps Script (voir apps-script/Code.gs).
+// Tant qu'elle est vide, l'envoi en ligne est désactivé et la section Avis reste cachée.
+const API_URL = "https://script.google.com/macros/s/AKfycbx69FNamZd7X3rpJNBRrPo95OLWJ579qxNZCdQR9m09xKNSluso6wRS16sQuJc8ZDqW/exec";
+
+const T0 = Date.now();
+async function envoyer(type, data) {
+  const r = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ type, delay: Date.now() - T0, ...data }) });
+  const j = await r.json();
+  if (!j.ok) throw new Error(j.error || 'Erreur');
+  return j;
 }
+const say = (el, txt, ok) => { el.textContent = txt; el.style.color = ok ? 'var(--lime)' : '#ff8a7a'; };
+
+// --- Avis publiés ---
+async function chargerAvis() {
+  if (!API_URL) return;
+  document.getElementById('avis').hidden = false;
+  const list = document.getElementById('avisList'), empty = document.getElementById('avisEmpty'), sum = document.getElementById('avisSum');
+  try {
+    const j = await (await fetch(API_URL)).json();
+    const avis = (j.avis || []).slice(0, 12);
+    list.innerHTML = '';
+    avis.forEach(a => {
+      const d = document.createElement('article'); d.className = 'rev';
+      const n = Math.max(1, Math.min(5, Number(a.note) || 5));
+      d.innerHTML = `<div class="stars on" style="--v:${n}" role="img" aria-label="${n} sur 5"></div><p></p><b></b> <small></small>`;
+      d.querySelector('p').textContent = a.texte; d.querySelector('b').textContent = a.nom;
+      const dt = new Date(a.date); d.querySelector('small').textContent = isNaN(dt) ? '' : dt.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+      list.appendChild(d);
+    });
+    empty.hidden = avis.length > 0;
+    if (avis.length) sum.textContent = (avis.reduce((t, a) => t + Number(a.note), 0) / avis.length).toFixed(1).replace('.', ',') + ' / 5 · ' + avis.length + ' avis';
+  } catch (e) { empty.hidden = false; empty.textContent = 'Les avis ne peuvent pas être chargés pour le moment.'; }
+}
+chargerAvis();
+
+// --- Formulaire d'avis ---
+let note = 0;
+const rate = document.getElementById('rate'), avisForm = document.getElementById('avisForm'), avisBtn = document.getElementById('avisBtn');
+const paint = () => [...rate.children].forEach((b, i) => { b.classList.toggle('on', i < note); b.setAttribute('aria-pressed', i < note); });
+for (let i = 1; i <= 5; i++) {
+  const b = document.createElement('button'); b.type = 'button'; b.textContent = '★'; b.setAttribute('aria-label', i + ' sur 5');
+  b.onclick = () => { note = i; paint(); }; rate.appendChild(b);
+}
+avisBtn.addEventListener('click', () => { const open = avisForm.hidden; avisForm.hidden = !open; avisBtn.setAttribute('aria-expanded', open); open && avisForm.querySelector('input[name=nom]').focus(); });
+avisForm.addEventListener('submit', async e => {
+  e.preventDefault();
+  const f = e.target, st = document.getElementById('avisMsg'), btn = f.querySelector('button[type=submit]'), x = f.elements;
+  if (!note) return say(st, 'Choisissez une note de 1 à 5 étoiles.', false);
+  btn.disabled = true; say(st, 'Envoi en cours…', true);
+  try {
+    await envoyer('avis', { note, nom: x.nom.value, texte: x.texte.value, site: x.site.value, consent: x.consent.checked });
+    f.reset(); note = 0; paint(); say(st, 'Merci ! Votre avis sera publié après validation.', true);
+  } catch (err) { say(st, "Envoi impossible pour le moment. Merci de réessayer plus tard.", false); }
+  btn.disabled = false;
+});
 
 // --- À MODIFIER : adresse qui reçoit les demandes du formulaire ---
 const EMAIL = "PBMecatec@hotmail.com";
@@ -404,13 +477,17 @@ cp && cp.addEventListener('click', async () => {
 // Les photos des créations ouvrent la galerie
 document.querySelectorAll('.shot').forEach(f => f.addEventListener('click', () => location.href = 'gallery.html'));
 
-// Formulaire : ouvre l'application e-mail avec la demande pré-remplie
-document.getElementById('f').addEventListener('submit', e => {
+// Formulaire de devis : envoi direct, sans ouvrir l'application e-mail
+document.getElementById('f').addEventListener('submit', async e => {
   e.preventDefault();
-  const d = new FormData(e.target);
-  const body = `Nom : ${d.get('nom')}\nContact : ${d.get('contact')}\n\n${d.get('msg')}`;
-  location.href = `mailto:${EMAIL}?subject=${encodeURIComponent('Demande : ' + d.get('sujet'))}&body=${encodeURIComponent(body)}`;
-  document.getElementById('msg').textContent = 'Votre application e-mail s\'ouvre : il ne reste qu\'à envoyer le message.';
+  const f = e.target, st = document.getElementById('msg'), btn = f.querySelector('button[type=submit]'), x = f.elements;
+  if (!API_URL) return say(st, "L'envoi en ligne n'est pas encore activé. Écrivez-moi à " + EMAIL + ".", false);
+  btn.disabled = true; say(st, 'Envoi en cours…', true);
+  try {
+    await envoyer('devis', { nom: x.nom.value, email: x.email.value, tel: x.tel.value, sujet: x.sujet.value, msg: x.msg.value, site: x.site.value });
+    f.reset(); say(st, 'Merci ! Votre demande est bien envoyée, je vous réponds rapidement.', true);
+  } catch (err) { say(st, "Envoi impossible pour le moment. Écrivez-moi à " + EMAIL + ".", false); }
+  btn.disabled = false;
 });
 
 // Halo lumineux qui suit la souris sur les cartes

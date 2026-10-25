@@ -162,9 +162,13 @@ function repoGuess() {
   return user + '/' + (part && !/\.html?$/i.test(part) ? part : user + '.github.io');
 }
 const DEBUG = /[?&]debug/.test(location.search);
-const dbg = { repo: '', etat: 'non lancé', fichiers: 0, photos: [] };
+const dbg = { repo: '', etat: 'non lancé', liste: '', fichiers: 0, photos: [] };
+async function listManifest() {
+  try { const r = await fetch('galerie/index.json', { cache: 'no-store' }); if (!r.ok) { dbg.liste = 'index.json : HTTP ' + r.status; return []; } const a = await r.json(); dbg.liste = 'index.json : ' + a.length + ' images'; return a; }
+  catch (e) { dbg.liste = 'index.json illisible'; return []; }
+}
 async function listRepoFiles(repo) {
-  const key = 'galerie:' + repo, TTL = 60000; /* la liste est conservée 1 minute seulement */
+  const key = 'galerie:' + repo, TTL = 60000;
   try { const c = JSON.parse(sessionStorage.getItem(key) || 'null'); if (c && Date.now() - c.t < TTL) { dbg.etat = 'liste en cache'; return c.files; } } catch (e) {}
   for (const ref of ['HEAD', 'main', 'master']) {
     try {
@@ -179,11 +183,11 @@ async function listRepoFiles(repo) {
   return [];
 }
 async function loadFolderPhotos() {
-  const repo = repoGuess(); dbg.repo = repo || '(introuvable : renseigner REPO)'; if (!repo) return;
+  const repo = repoGuess(); dbg.repo = repo || '(non détecté, sans importance si index.json fonctionne)';
   const ids = TABS.map(t => t.id).filter(i => i !== 'tout');
   const byName = new Map();
   const known = new Set(PHOTOS.map(p => p.src.split('/').pop().toLowerCase()));
-  const all = await listRepoFiles(repo); dbg.fichiers = all.length;
+  const all = [...new Set([...(await listManifest()), ...(repo ? await listRepoFiles(repo) : [])])]; dbg.fichiers = all.length;
   all.forEach(path => {
     const m = path.match(/^galerie\/([^/]+)\/([^/]+)$/);
     if (!m || !ids.includes(m[1]) || !IMG_EXT.test(m[2])) return;
@@ -212,7 +216,7 @@ show(location.hash.slice(1) || 'tout');
 loadFolderPhotos().then(() => { buildTabs(); show(currentId); }).catch(e => { dbg.etat = 'erreur : ' + e.message; }).finally(() => {
   if (!DEBUG) return;
   const d = document.createElement('pre'); d.style.cssText = 'margin:20px;padding:14px;border:1px dashed #c9f31d;border-radius:10px;white-space:pre-wrap;color:#eef1ea;font-size:.8rem';
-  d.textContent = 'DIAGNOSTIC\nDépôt détecté : ' + dbg.repo + '\nÉtat : ' + dbg.etat + '\nFichiers vus dans le dépôt : ' + dbg.fichiers + '\nPhotos ajoutées automatiquement : ' + (dbg.photos.join(', ') || 'aucune');
+  d.textContent = 'DIAGNOSTIC\nDépôt détecté : ' + dbg.repo + '\nListe de la galerie : ' + dbg.liste + '\nAPI GitHub : ' + dbg.etat + '\nFichiers vus dans le dépôt : ' + dbg.fichiers + '\nPhotos ajoutées automatiquement : ' + (dbg.photos.join(', ') || 'aucune');
   document.body.appendChild(d);
 });
 addEventListener('hashchange', () => show(location.hash.slice(1) || 'tout'));

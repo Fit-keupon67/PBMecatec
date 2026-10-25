@@ -12,6 +12,12 @@ Prix: 30 € / jour
 Description: Cette bétonnière permet de mélanger du mortier, du béton, du plâtre et de la chape grâce à ses deux bras et ses différentes inclinaisons. Testée pour réaliser une gâchée de béton avec un demi sac de ciment de 35kg, soit 110 kg de béton. Puissant moteur électrique de 550W résistant à l'eau.
 Disponible: oui
 
+Photo: lotus.webp
+Titre: Lotus Elise
+Prix: Selon projet
+Description: Superbe Lotus Elise 111S pour vos shooting photo, mariage, eye-catcher pour vos ventes diverses,.. (Pour des raisons légales, elle ne sera disponible qu'avec chauffeur)
+Disponible: non
+
 Photo: dechetterie.webp
 Titre: Trajet déchetterie
 Prix: 25 € / trajet (+ 0.50€/km)

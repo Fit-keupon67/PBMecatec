@@ -75,7 +75,9 @@ h1{font-family:var(--head);font-size:clamp(1.7rem,4vw,2.6rem);margin:30px 0 6px}
 <script>
 
 /* ===== AJOUTER UNE PHOTO =====
+   Les dossiers galerie/<catégorie>/ font foi : une photo apparaît dans un onglet si (et seulement si) elle est dans ce dossier.
    Méthode simple : déposez la photo dans galerie/<catégorie>/ (elle apparaît toute seule, voir plus bas).
+   Cette liste ne sert qu'à donner un joli titre / un cadrage aux photos, et de secours si GitHub est injoignable.
    Méthode manuelle : déposez-la dans galerie/<catégorie>/ puis ajoutez une ligne dans PHOTOS :
    { src: "galerie/<catégorie>/photo.webp", titre, cat: ["soudure", ...] }
    Les catégories possibles sont les "id" de TABS ci-dessous. */
@@ -164,7 +166,7 @@ function repoGuess() {
   return user + '/' + (part && !/\.html?$/i.test(part) ? part : user + '.github.io');
 }
 const DEBUG = /[?&]debug/.test(location.search);
-const dbg = { repo: '', etat: 'non lancé', liste: '', fichiers: 0, photos: [] };
+const dbg = { source: '', repo: '', etat: 'non lancé', liste: '', fichiers: 0, photos: [] };
 async function listManifest() {
   try { const r = await fetch('galerie/index.json', { cache: 'no-store' }); if (!r.ok) { dbg.liste = 'index.json : HTTP ' + r.status; return []; } const a = await r.json(); dbg.liste = 'index.json : ' + a.length + ' images'; return a; }
   catch (e) { dbg.liste = 'index.json illisible'; return []; }
@@ -185,23 +187,35 @@ async function listRepoFiles(repo) {
   return [];
 }
 async function loadFolderPhotos() {
-  const repo = repoGuess(); dbg.repo = repo || '(non détecté, sans importance si index.json fonctionne)';
+  const repo = repoGuess(); dbg.repo = repo || '(non détecté)';
   const ids = TABS.map(t => t.id).filter(i => i !== 'tout');
-  const byName = new Map();
-  const known = new Map(PHOTOS.map(p => [p.src.split('/').pop().toLowerCase(), p]));
   const wait = ms => new Promise(r => setTimeout(() => r([]), ms));
-  const [a, b] = await Promise.all([Promise.race([listManifest(), wait(1500)]), repo ? Promise.race([listRepoFiles(repo), wait(1500)]) : []]);
-  const all = [...new Set([...a, ...b])]; dbg.fichiers = all.length;
+  const [man, api] = await Promise.all([Promise.race([listManifest(), wait(1500)]), repo ? Promise.race([listRepoFiles(repo), wait(1500)]) : []]);
+  /* liste fraîche de GitHub en priorité, sinon index.json */
+  const all = api.length ? api : man; dbg.fichiers = all.length; dbg.source = api.length ? 'API GitHub' : (man.length ? 'index.json' : 'aucune (liste intégrée)');
+  if (!all.length) return; /* aucune liste disponible : on garde la liste intégrée */
+
+  const nom = s => s.split('/').pop().toLowerCase();
+  const meta = new Map(PHOTOS.map(p => [nom(p.src), p]));
+  const byName = new Map();
   all.forEach(path => {
     const m = path.match(/^galerie\/([^/]+)\/([^/]+)$/);
     if (!m || !ids.includes(m[1]) || !IMG_EXT.test(m[2])) return;
-    const name = m[2].toLowerCase();
-    if (known.has(name)) { const p = known.get(name); if (!p.cat.includes(m[1])) p.cat.push(m[1]); return; } /* photo déjà listée : on l'ajoute simplement à l'onglet de ce dossier */
-    if (byName.has(name)) { byName.get(name).cat.push(m[1]); return; }
-    const titre = m[2].replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ').trim();
-    byName.set(name, { src: path.split('/').map(encodeURIComponent).join('/'), titre: titre.charAt(0).toUpperCase() + titre.slice(1), cat: [m[1]], full: true });
+    const key = m[2].toLowerCase();
+    let e = byName.get(key);
+    if (!e) {
+      const k = meta.get(key), t = m[2].replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ').trim();
+      e = { src: path.split('/').map(encodeURIComponent).join('/'), titre: k ? k.titre : t.charAt(0).toUpperCase() + t.slice(1), cat: [], full: k ? k.full : true };
+      if (k && k.w) { e.w = k.w; e.h = k.h; }
+      byName.set(key, e);
+    }
+    if (!e.cat.includes(m[1])) e.cat.push(m[1]);
   });
-  byName.forEach(p => { PHOTOS.push(p); dbg.photos.push(p.src); });
+  /* les catégories viennent UNIQUEMENT des dossiers : une photo absente d'un dossier disparaît de son onglet */
+  const out = [];
+  PHOTOS.forEach(p => { const e = byName.get(nom(p.src)); if (e) { out.push(e); byName.delete(nom(p.src)); } });
+  byName.forEach(e => { out.push(e); dbg.photos.push(e.src); });
+  PHOTOS.length = 0; out.forEach(e => PHOTOS.push(e));
 }
 
 const lb = document.getElementById('lb'), lbi = lb.querySelector('img'), lbp = lb.querySelector('p');
@@ -221,7 +235,7 @@ loadFolderPhotos().catch(e => { dbg.etat = 'erreur : ' + e.message; }).finally((
   ready = true; buildTabs(); show(location.hash.slice(1) || 'tout');
   if (!DEBUG) return;
   const d = document.createElement('pre'); d.style.cssText = 'margin:20px;padding:14px;border:1px dashed #c9f31d;border-radius:10px;white-space:pre-wrap;color:#eef1ea;font-size:.8rem';
-  d.textContent = 'DIAGNOSTIC\nDépôt détecté : ' + dbg.repo + '\nListe de la galerie : ' + dbg.liste + '\nAPI GitHub : ' + dbg.etat + '\nFichiers vus dans le dépôt : ' + dbg.fichiers + '\nPhotos ajoutées automatiquement : ' + (dbg.photos.join(', ') || 'aucune');
+  d.textContent = 'DIAGNOSTIC\nDépôt détecté : ' + dbg.repo + '\nListe de la galerie : ' + dbg.liste + '\nSource utilisée : ' + dbg.source + '\nAPI GitHub : ' + dbg.etat + '\nFichiers vus dans le dépôt : ' + dbg.fichiers + '\nPhotos ajoutées automatiquement : ' + (dbg.photos.join(', ') || 'aucune');
   document.body.appendChild(d);
 });
 addEventListener('hashchange', () => ready && show(location.hash.slice(1) || 'tout'));

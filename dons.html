@@ -145,7 +145,7 @@ f.addEventListener('submit', async e => {
   if (!API_URL) return say(st, "L'envoi en ligne n'est pas activé. Écrivez-moi à " + EMAIL + ".", false);
   btn.disabled = true; say(st, 'Envoi en cours…', true);
   try {
-    await envoyer('devis', { nom: x.nom.value, email: x.email.value, tel: '', sujet: "Don d'objet : " + x.objet.value, msg: 'Objet : ' + x.objet.value + '\nVille : ' + x.ville.value + '\n\n' + x.msg.value, site: x.site.value });
+    await envoyer('don', { nom: x.nom.value, email: x.email.value, tel: '', sujet: "Don d'objet : " + x.objet.value, msg: 'Objet : ' + x.objet.value + '\nVille : ' + x.ville.value + '\n\n' + x.msg.value, site: x.site.value });
     f.reset(); say(st, 'Merci ! Votre proposition est envoyée, je vous réponds rapidement.', true);
   } catch (err) { say(st, "Envoi impossible pour le moment. Écrivez-moi à " + EMAIL + ". (détail : " + err.message + ")", false); }
   btn.disabled = false;

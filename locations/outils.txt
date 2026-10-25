@@ -6,7 +6,7 @@
 #  Enregistrez ce fichier en UTF-8 (Bloc-notes : Enregistrer sous > Encodage UTF-8).
 # ============================================================
 
-Photo: exemple-outil.jpg
+Photo: media-Photoroom.png
 Titre: Exemple d'outil (à supprimer)
 Prix: 15 € / jour
 Description: Remplacez ce bloc par votre premier outil : une ou deux phrases suffisent. Indiquez ce qui est fourni (forets, câble, etc.).

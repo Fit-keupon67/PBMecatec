@@ -103,19 +103,16 @@ dialog h2{font-size:1.3rem;margin-bottom:12px}
 
 <script>
 /* ===== AJOUTER UN OUTIL À LOUER =====
-   MÉTHODE SIMPLE (sans code) : déposez dans le dossier  locations/  du dépôt GitHub
-     - la photo de l'outil, par exemple  perceuse-a-colonne.jpg
-     - (facultatif) un fichier texte du même nom,  perceuse-a-colonne.txt , contenant :
-         Titre: Perceuse à colonne
-         Prix: 15 € / jour
-         Description: Puissante, idéale pour percer l'acier. Livrée avec un jeu de forets.
-         Disponible: oui
-     L'outil apparaît tout seul sur cette page. Sans fichier texte, le nom du fichier sert de titre.
-     Ces photos ne sont JAMAIS dans la galerie photos : elles restent dans le dossier locations/.
-   MÉTHODE MANUELLE (secours) : ajoutez une ligne dans la liste ci-dessous. */
-const OUTILS = [
-  // { photo: "locations/perceuse-a-colonne.jpg", nom: "Perceuse à colonne", desc: "Idéale pour percer l'acier.", prix: "15 € / jour", dispo: true },
-];
+   Tout se passe dans le dossier  locations/  :
+     1) déposez-y la photo de l'outil (ex. perceuse.jpg)
+     2) ouvrez le fichier  locations/outils.txt  et ajoutez un bloc :
+          Photo: perceuse.jpg
+          Titre: Perceuse à colonne
+          Prix: 15 € / jour
+          Description: Idéale pour percer l'acier.
+          Disponible: oui
+   Rien à modifier dans ce fichier HTML. Ces photos n'apparaissent jamais dans la galerie. */
+const OUTILS_FILE = "locations/outils.txt";
 
 // ===== SERVICE D'ENVOI : même adresse que sur index.html (à changer aux deux endroits si elle change) =====
 const API_URL = "https://script.google.com/macros/s/AKfycbxAvpIE5mm2_YU8y0mAQCIhU3_s0dXIjdkQSBktzFI7EE1-sNMc3c_iev1NuF9rVsf2/exec";
@@ -138,52 +135,41 @@ function envoyer(type, data) {
 const say = (el, txt, ok) => { el.textContent = txt; el.style.color = ok ? 'var(--lime)' : '#ff8a7a'; };
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
-const IMG_EXT = /\.(jpe?g|png|webp|gif|avif)$/i;
 const grid = document.getElementById('grid'), emptyEl = document.getElementById('empty'), loadEl = document.getElementById('load');
 let tools = [];
-
-function repoGuess() {
-  const h = location.hostname; if (!h.endsWith('.github.io')) return '';
-  const user = h.split('.')[0], part = location.pathname.split('/').filter(Boolean)[0];
-  return user + '/' + (part && !/\.html?$/i.test(part) ? part : user + '.github.io');
-}
-async function listRepoFiles(repo) {
-  const key = 'galerie:' + repo, TTL = 60000;
-  try { const c = JSON.parse(sessionStorage.getItem(key) || 'null'); if (c && Date.now() - c.t < TTL) return c.files; } catch (e) {}
-  for (const ref of ['HEAD', 'main', 'master']) {
-    try {
-      const r = await fetch(`https://api.github.com/repos/${repo}/git/trees/${ref}?recursive=1`, { cache: 'no-store' });
-      if (!r.ok) continue;
-      const files = (await r.json()).tree.map(t => t.path);
-      try { sessionStorage.setItem(key, JSON.stringify({ t: Date.now(), files })); } catch (e) {}
-      return files;
-    } catch (e) {}
-  }
-  return [];
-}
-function parseTxt(t) {
-  const map = { titre: 'nom', nom: 'nom', prix: 'prix', description: 'desc', desc: 'desc', dispo: 'dispo', disponible: 'dispo' };
-  const o = {}; let cur = 'desc';
-  t.replace(/^\uFEFF/, '').split(/\r?\n/).forEach(l => {
-    const m = l.match(/^\s*(titre|nom|prix|description|desc|disponible|dispo)\s*:\s*(.*)$/i);
-    if (m) { cur = map[m[1].toLowerCase()]; o[cur] = m[2].trim(); }
-    else if (l.trim()) o[cur] = ((o[cur] || '') + ' ' + l.trim()).trim();
-  });
-  if (o.dispo !== undefined) o.dispo = !/^(non|no|0|faux|indispo|lou)/i.test(o.dispo);
-  return o;
-}
 const enc = p => p.split('/').map(encodeURIComponent).join('/');
-async function loadFolder() {
-  const repo = repoGuess(); if (!repo) return [];
-  const files = await Promise.race([listRepoFiles(repo), new Promise(r => setTimeout(() => r([]), 3000))]);
-  const pics = files.filter(p => /^locations\/[^/]+$/i.test(p) && IMG_EXT.test(p));
-  return Promise.all(pics.map(async p => {
-    const base = p.replace(/\.[^.]+$/, ''), txt = files.find(f => f.toLowerCase() === (base + '.txt').toLowerCase());
-    let meta = {};
-    if (txt) { try { const r = await fetch(enc(txt), { cache: 'no-store' }); if (r.ok) meta = parseTxt(await r.text()); } catch (e) {} }
-    const t = base.split('/').pop().replace(/[-_]+/g, ' ').trim();
-    return { raw: p, photo: enc(p), nom: meta.nom || t.charAt(0).toUpperCase() + t.slice(1), desc: meta.desc || '', prix: meta.prix || '', dispo: meta.dispo !== false };
+const decode = buf => { try { return new TextDecoder('utf-8', { fatal: true }).decode(buf); } catch (e) { return new TextDecoder('windows-1252').decode(buf); } };
+
+function parseOutils(t) {
+  const map = { photo: 'photo', image: 'photo', titre: 'nom', nom: 'nom', prix: 'prix', description: 'desc', desc: 'desc', disponible: 'dispo', dispo: 'dispo' };
+  const list = []; let o = null, cur = 'desc';
+  const push = () => { if (o && (o.nom || o.photo)) list.push(o); o = null; };
+  t.replace(/^\uFEFF/, '').split(/\r?\n/).forEach(l => {
+    if (/^\s*(-{3,}|={3,})\s*$/.test(l)) { push(); return; }
+    if (/^\s*#/.test(l)) return;
+    const m = l.match(/^\s*(photo|image|titre|nom|prix|description|desc|disponible|dispo)\s*:\s*(.*)$/i);
+    if (m) {
+      const k = map[m[1].toLowerCase()];
+      if (k === 'photo' && o && o.photo !== undefined) push();
+      if (!o) o = {};
+      cur = k; o[k] = m[2].trim();
+    } else if (l.trim() && o) o[cur] = ((o[cur] || '') + ' ' + l.trim()).trim();
+  });
+  push();
+  return list.map(o => ({
+    photo: o.photo ? enc('locations/' + o.photo.replace(/^\/?locations\//i, '')) : '',
+    nom: o.nom || (o.photo ? o.photo.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ') : 'Outil'),
+    desc: o.desc || '', prix: o.prix || '',
+    dispo: !/^(non|no|0|faux|indispo|lou)/i.test(o.dispo || 'oui')
   }));
+}
+async function load() {
+  try {
+    const r = await fetch(OUTILS_FILE, { cache: 'no-cache' });
+    if (!r.ok) throw new Error('fichier introuvable (HTTP ' + r.status + ')');
+    tools = parseOutils(decode(await r.arrayBuffer()));
+  } catch (e) { emptyEl.textContent = "Impossible de lire " + OUTILS_FILE + " : " + e.message + "."; }
+  render();
 }
 
 function render() {
@@ -221,12 +207,7 @@ f.addEventListener('submit', async e => {
   btn.disabled = false;
 });
 
-const norm = o => ({ raw: (o.photo || '').toLowerCase(), photo: o.photo ? enc(o.photo) : '', nom: o.nom || 'Outil', desc: o.desc || '', prix: o.prix || '', dispo: o.dispo !== false });
-tools = OUTILS.map(norm); render(); loadEl.hidden = false;
-loadFolder().then(extra => {
-  const known = new Set(tools.map(t => t.raw));
-  tools = tools.concat(extra.filter(x => !known.has(x.raw.toLowerCase())));
-}).catch(() => {}).finally(render);
+load();
 </script>
 </body>
 </html>

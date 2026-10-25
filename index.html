@@ -391,9 +391,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbx69FNamZd7X3rpJNBRrPo9
 
 const T0 = Date.now();
 async function envoyer(type, data) {
-  const r = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ type, delay: Date.now() - T0, ...data }) });
-  const j = await r.json();
-  if (!j.ok) throw new Error(j.error || 'Erreur');
+  let r, j;
+  try { r = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ type, delay: Date.now() - T0, ...data }) }); }
+  catch (e) { throw new Error('réseau : ' + e.message); }
+  try { j = await r.json(); } catch (e) { throw new Error('réponse illisible, HTTP ' + r.status); }
+  if (!j.ok) throw new Error(j.error || 'refusé par le service');
   return j;
 }
 const say = (el, txt, ok) => { el.textContent = txt; el.style.color = ok ? 'var(--lime)' : '#ff8a7a'; };
@@ -438,7 +440,7 @@ avisForm.addEventListener('submit', async e => {
   try {
     await envoyer('avis', { note, nom: x.nom.value, texte: x.texte.value, site: x.site.value, consent: x.consent.checked });
     f.reset(); note = 0; paint(); say(st, 'Merci ! Votre avis sera publié après validation.', true);
-  } catch (err) { say(st, "Envoi impossible pour le moment. Merci de réessayer plus tard.", false); }
+  } catch (err) { say(st, "Envoi impossible pour le moment. Merci de réessayer plus tard. (détail : " + err.message + ")", false); }
   btn.disabled = false;
 });
 
@@ -486,7 +488,7 @@ document.getElementById('f').addEventListener('submit', async e => {
   try {
     await envoyer('devis', { nom: x.nom.value, email: x.email.value, tel: x.tel.value, sujet: x.sujet.value, msg: x.msg.value, site: x.site.value });
     f.reset(); say(st, 'Merci ! Votre demande est bien envoyée, je vous réponds rapidement.', true);
-  } catch (err) { say(st, "Envoi impossible pour le moment. Écrivez-moi à " + EMAIL + ".", false); }
+  } catch (err) { say(st, "Envoi impossible pour le moment. Écrivez-moi à " + EMAIL + ". (détail : " + err.message + ")", false); }
   btn.disabled = false;
 });
 

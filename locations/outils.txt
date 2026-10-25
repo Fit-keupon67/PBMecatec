@@ -12,6 +12,12 @@ Prix: Selon projet
 Description: Superbe Lotus Elise 111S pour vos shooting photo, mariage, eye-catcher pour vos ventes diverses,.. (Pour des raisons légales, elle ne sera disponible qu'avec chauffeur)
 Disponible: non
 
+Photo: coup-de-pouce.webp
+Titre: Besoin d'un coup de pouce ? 
+Prix: A discuter
+Description: Besoin d'un coup de pouce pour vos travaux, déménagements,...?)
+Disponible: non
+
 Photo: media-Photoroom.png
 Titre: Bétonnière électrique 120L
 Prix: 30 € / jour

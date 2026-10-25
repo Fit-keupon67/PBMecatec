@@ -73,8 +73,9 @@ h1{font-family:var(--head);font-size:clamp(1.7rem,4vw,2.6rem);margin:30px 0 6px}
 <script>
 
 /* ===== AJOUTER UNE PHOTO =====
-   1. Déposez le fichier dans images/
-   2. Ajoutez une ligne dans PHOTOS : { src, titre, cat: ["soudure", ...] }
+   Méthode simple : déposez la photo dans galerie/<catégorie>/ (elle apparaît toute seule, voir plus bas).
+   Méthode manuelle : déposez-la dans galerie/<catégorie>/ puis ajoutez une ligne dans PHOTOS :
+   { src: "galerie/<catégorie>/photo.webp", titre, cat: ["soudure", ...] }
    Les catégories possibles sont les "id" de TABS ci-dessous. */
 const TABS = [
   { id: "tout",          label: "Tout" },
@@ -90,28 +91,28 @@ const TABS = [
 
 const PHOTOS = [
   // full: true = photo en plein cadre (sans fond détouré)
-  { src: "images/drift-trike.webp",        titre: "Drift trike thermique",       cat: ["soudure", "conception", "mecanique"] },
-  { src: "images/chopper-electrique.webp", titre: "Chopper électrique",          cat: ["soudure", "conception", "electricite", "mecanique"] },
-  { src: "images/trio.webp",               titre: "La gamme complète",           cat: ["soudure", "conception"] },
-  { src: "images/conception-v5.webp",      titre: "Conception 3D, version V5",   cat: ["conception"], full: true },
+  { src: "galerie/soudure/drift-trike.webp",        titre: "Drift trike thermique",       cat: ["soudure", "conception", "mecanique"] },
+  { src: "galerie/soudure/chopper-electrique.webp", titre: "Chopper électrique",          cat: ["soudure", "conception", "electricite", "mecanique"] },
+  { src: "galerie/soudure/trio.webp",               titre: "La gamme complète",           cat: ["soudure", "conception"] },
+  { src: "galerie/conception/conception-v5.webp",      titre: "Conception 3D, version V5",   cat: ["conception"], full: true },
 
-  { src: "images/impression-3d-1.webp",    titre: "Impression 3D : aperçu de la pièce",            cat: ["impression-3d"], full: true },
-  { src: "images/impression-3d-2.webp",    titre: "Impression 3D : structure interne de la pièce", cat: ["impression-3d"], full: true },
-  { src: "images/moto-modif.webp",         titre: "Modification moto, sans modification de châssis", cat: ["mecanique", "impression-3d"], full: true },
+  { src: "galerie/impression-3d/impression-3d-1.webp",    titre: "Impression 3D : aperçu de la pièce",            cat: ["impression-3d"], full: true },
+  { src: "galerie/impression-3d/impression-3d-2.webp",    titre: "Impression 3D : structure interne de la pièce", cat: ["impression-3d"], full: true },
+  { src: "galerie/mecanique/moto-modif.webp",         titre: "Modification moto, sans modification de châssis", cat: ["mecanique", "impression-3d"], full: true },
 
-  { src: "images/lotus.webp",              titre: "Lotus Elise",                 cat: ["voiture"] },
-  { src: "images/portrait.webp",           titre: "Shooting avec la Lotus",      cat: ["voiture"] },
-  { src: "images/voiture-avant.webp",          titre: "Lotus Elise, vue avant",    cat: ["voiture"], full: true },
-  { src: "images/voiture-arriere.webp",        titre: "Lotus Elise, vue arrière",  cat: ["voiture"], full: true },
-  { src: "images/voiture-roue.webp",           titre: "Lotus Elise, détail jante", cat: ["voiture"], full: true },
-  { src: "images/voiture-arriere-detail.webp", titre: "Lotus Elise, feux arrière", cat: ["voiture"], full: true },
+  { src: "galerie/voiture/lotus.webp",              titre: "Lotus Elise",                 cat: ["voiture"] },
+  { src: "galerie/voiture/portrait.webp",           titre: "Shooting avec la Lotus",      cat: ["voiture"] },
+  { src: "galerie/voiture/voiture-avant.webp",          titre: "Lotus Elise, vue avant",    cat: ["voiture"], full: true },
+  { src: "galerie/voiture/voiture-arriere.webp",        titre: "Lotus Elise, vue arrière",  cat: ["voiture"], full: true },
+  { src: "galerie/voiture/voiture-roue.webp",           titre: "Lotus Elise, détail jante", cat: ["voiture"], full: true },
+  { src: "galerie/voiture/voiture-arriere-detail.webp", titre: "Lotus Elise, feux arrière", cat: ["voiture"], full: true },
 
-  { src: "images/electronique-condensateurs.webp", titre: "Inspection de condensateurs au microscope", cat: ["electronique"], full: true },
-  { src: "images/electronique-circuit.webp",       titre: "Inspection d'un circuit intégré sur carte", cat: ["electronique"], full: true },
+  { src: "galerie/electronique/electronique-condensateurs.webp", titre: "Inspection de condensateurs au microscope", cat: ["electronique"], full: true },
+  { src: "galerie/electronique/electronique-circuit.webp",       titre: "Inspection d'un circuit intégré sur carte", cat: ["electronique"], full: true },
 
-  { src: "images/app-suivi-lames.webp",          titre: "Suivi des lames",                cat: ["applications"], full: true },
-  { src: "images/app-gestion-outils-multi.webp", titre: "Gestion des outils multi-machines", cat: ["applications"], full: true },
-  { src: "images/app-graphique-outils.webp",     titre: "Graphique des quantités et gestion des outils", cat: ["applications"] },
+  { src: "galerie/applications/app-suivi-lames.webp",          titre: "Suivi des lames",                cat: ["applications"], full: true },
+  { src: "galerie/applications/app-gestion-outils-multi.webp", titre: "Gestion des outils multi-machines", cat: ["applications"], full: true },
+  { src: "galerie/applications/app-graphique-outils.webp",     titre: "Graphique des quantités et gestion des outils", cat: ["applications"] },
 ];
 
 const grid = document.getElementById('grid'), filters = document.getElementById('filters'), empty = document.getElementById('empty');
@@ -178,10 +179,12 @@ async function loadFolderPhotos() {
   const repo = repoGuess(); if (!repo) return;
   const ids = TABS.map(t => t.id).filter(i => i !== 'tout');
   const byName = new Map();
+  const known = new Set(PHOTOS.map(p => p.src.split('/').pop().toLowerCase()));
   (await listRepoFiles(repo)).forEach(path => {
     const m = path.match(/^galerie\/([^/]+)\/([^/]+)$/);
     if (!m || !ids.includes(m[1]) || !IMG_EXT.test(m[2])) return;
     const name = m[2].toLowerCase();
+    if (known.has(name)) return;
     if (byName.has(name)) { byName.get(name).cat.push(m[1]); return; }
     const titre = m[2].replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ').trim();
     byName.set(name, { src: path.split('/').map(encodeURIComponent).join('/'), titre: titre.charAt(0).toUpperCase() + titre.slice(1), cat: [m[1]], full: true });

@@ -6,13 +6,15 @@
 <title>Pascal Bernier – Mécanique, soudure, électronique, impression 3D et applications</title>
 <meta name="description" content="Soudure, conception, impression 3D, mécanique, électricité, réparation électronique, prêt de voiture pour shootings photo et applications de gestion d'entreprise.">
 <meta property="og:title" content="Pascal Bernier – Atelier mécanique, électronique et applications">
-<meta property="og:image" content="images/portrait.webp">
+<meta property="og:image" content="galerie/voiture/portrait.webp">
+<meta property="og:description" content="Soudure, conception, impression 3D, mécanique, électricité, réparation électronique et applications sur mesure. Devis gratuit.">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#0d1014">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="fr_FR">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"LocalBusiness","name":"Pascal Bernier – Atelier mécanique, électronique et applications",
- "founder":{"@type":"Person","name":"Pascal Bernier"},"telephone":"+33656844919","email":"pascal.bernier67@hotmail.fr",
+ "founder":{"@type":"Person","name":"Pascal Bernier"},"email":"PBMecatec@hotmail.com",
  "areaServed":"Bas-Rhin, Alsace","sameAs":["https://www.instagram.com/littlekeupon/"],
  "makesOffer":["Soudure","Conception","Impression 3D","Mécanique","Électricité","Réparation électronique","Applications de gestion d'entreprise"]}
 </script>
@@ -169,9 +171,33 @@ footer a:hover{color:var(--lime)}
 }
 @media(max-width:520px){.grid{grid-template-columns:1fr}.row{grid-template-columns:1fr}.sec-head{flex-direction:column;align-items:start}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.stars::before{width:calc(var(--v) / 5 * 100%)}}
+
+/* ajouts */
+.skip{position:absolute;left:-999px;top:8px;z-index:60;background:var(--lime);color:#10140a;padding:8px 14px;border-radius:8px;font-family:var(--head);font-weight:600}
+.skip:focus{left:8px}
+nav ul a.act{color:var(--lime)}
+.copy{margin-left:8px;font:inherit;font-size:.72rem;color:var(--muted);background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:2px 10px;cursor:pointer;transition:.2s}
+.copy:hover{color:var(--lime);border-color:var(--lime)}
+.shot{cursor:pointer}
+.rv{opacity:0;transform:translateY(18px);transition:opacity .6s,transform .6s}.rv.in{opacity:1;transform:none}
+.steps{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.steps li{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.steps b{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--lime);color:#10140a;font-family:var(--head);margin-bottom:8px}
+.steps h3{font-size:1rem;margin-bottom:4px}.steps p{font-size:.84rem;color:var(--muted);line-height:1.4}
+.faq{display:grid;gap:8px}
+.faq details{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
+.faq details[open]{border-color:rgba(201,243,29,.5)}
+.faq summary{cursor:pointer;font-family:var(--head);font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:12px}
+.faq summary::after{content:"+";color:var(--lime)}.faq details[open] summary::after{content:"–"}
+.faq p{color:var(--muted);font-size:.9rem;margin-top:8px}
+#msg{font-size:.85rem;color:var(--lime);min-height:1.2em}
+@media(max-width:900px){.steps{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.steps{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none}}
 </style>
 </head>
 <body>
+<a class="skip" href="#top">Aller au contenu</a>
 
 <header>
   <div class="wrap">
@@ -202,7 +228,7 @@ footer a:hover{color:var(--lime)}
     </div>
     <div class="hero-pic" id="tilt">
       <div class="frame"><div class="screen">
-        <img src="images/portrait.webp" alt="Pascal Bernier devant sa Lotus Elise jaune" width="734" height="860">
+        <img src="galerie/voiture/portrait.webp" alt="Pascal Bernier devant sa Lotus Elise jaune" width="734" height="860">
       </div></div>
       <div class="badge"><strong>BERNIER Pascal <b id="age">33 ans</b></strong>Mécanique · Électronique · Applications</div>
     </div>
@@ -251,22 +277,47 @@ footer a:hover{color:var(--lime)}
     <div class="wrap">
       <div class="sec-head"><h2>Mes créations</h2><p>Conçues et fabriquées dans mon atelier.</p></div>
       <div class="shots">
-        <figure class="shot"><img src="images/drift-trike.webp" alt="Drift trike thermique" loading="lazy"><figcaption>Drift trike thermique</figcaption></figure>
-        <figure class="shot"><img src="images/chopper-electrique.webp" alt="Chopper électrique" loading="lazy"><figcaption>Chopper électrique</figcaption></figure>
-        <figure class="shot"><img src="images/trio.webp" alt="Trois trikes et choppers" loading="lazy"><figcaption>La gamme</figcaption></figure>
+        <figure class="shot"><img src="galerie/soudure/drift-trike.webp" alt="Drift trike thermique" loading="lazy"><figcaption>Drift trike thermique</figcaption></figure>
+        <figure class="shot"><img src="galerie/soudure/chopper-electrique.webp" alt="Chopper électrique" loading="lazy"><figcaption>Chopper électrique</figcaption></figure>
+        <figure class="shot"><img src="galerie/soudure/trio.webp" alt="Trois trikes et choppers" loading="lazy"><figcaption>La gamme</figcaption></figure>
       </div>
+      <div class="more"><a class="btn" href="gallery.html">Voir toute la galerie →</a></div>
     </div>
   </section>
 
   <section id="voiture">
     <div class="wrap">
       <div class="car">
-        <img src="images/lotus.webp" alt="Lotus Elise jaune" loading="lazy">
+        <img src="galerie/voiture/lotus.webp" alt="Lotus Elise jaune" loading="lazy">
         <div>
           <h3>Lotus Elise : prêt pour vos shootings photo</h3>
           <p>Une sportive jaune qui se remarque, disponible sur réservation pour vos séances photo, clips ou événements.</p>
           <div class="cta"><a class="btn main sm" href="#contact">Réserver la voiture</a><a class="btn sm" href="gallery.html#voiture">Voir la galerie</a></div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="methode">
+    <div class="wrap">
+      <div class="sec-head"><h2>Comment ça marche</h2><p>Simple, clair, sans surprise.</p></div>
+      <ol class="steps">
+        <li><b>1</b><h3>Vous me décrivez le besoin</h3><p>Par le formulaire ou par e-mail, avec des photos si possible.</p></li>
+        <li><b>2</b><h3>Je vous fais un devis gratuit</h3><p>Prix et délai annoncés avant de commencer.</p></li>
+        <li><b>3</b><h3>Je réalise le travail</h3><p>Fabrication, réparation ou développement, avec un suivi régulier.</p></li>
+        <li><b>4</b><h3>Livraison et conseils</h3><p>Pièce ou outil prêt à l'emploi, avec les explications utiles.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="wrap">
+      <div class="sec-head"><h2>Questions fréquentes</h2></div>
+      <div class="faq">
+        <details><summary>Le devis est-il vraiment gratuit ?</summary><p>Oui, le devis est gratuit et sans engagement.</p></details>
+        <details><summary>Où intervenez-vous ?</summary><p>Dans le Bas-Rhin (67) et les environs. Pour une pièce à fabriquer ou une carte à réparer, un envoi ou un dépôt est possible.</p></details>
+        <details><summary>Quelles informations dois-je donner pour un devis ?</summary><p>Décrivez le besoin, ajoutez des photos ou un plan si vous en avez, et indiquez le délai souhaité.</p></details>
+        <details><summary>Comment réserver la Lotus pour un shooting ?</summary><p>Utilisez le formulaire en choisissant « Prêt de voiture (shooting) », avec la date et le lieu envisagés.</p></details>
       </div>
     </div>
   </section>
@@ -277,20 +328,20 @@ footer a:hover{color:var(--lime)}
       <div class="contact">
         <div class="box">
           <ul class="info">
-            <li><em>📞</em><div><small>Téléphone</small><a href="tel:+33656844919">+33 6 56 84 49 19</a></div></li>
-            <li><em>✉️</em><div><small>E-mail</small><a href="mailto:pascal.bernier67@hotmail.fr">pascal.bernier67@hotmail.fr</a></div></li>
+            <li><em>✉️</em><div><small>E-mail</small><a href="mailto:PBMecatec@hotmail.com">PBMecatec@hotmail.com</a> <button type="button" class="copy" id="copyMail" aria-label="Copier l'adresse e-mail">Copier</button></div></li>
             <li><em>📍</em><div><small>Zone d'intervention</small>Bas-Rhin (67) et alentours</div></li>
-            <li><em>📷</em><div><small>Instagram</small><a href="https://www.instagram.com/littlekeupon/" target="_blank" rel="noopener">instagram.com/PBmécatec</a></div></li>
+            <li><em>📷</em><div><small>Instagram</small><a href="https://www.instagram.com/littlekeupon/" target="_blank" rel="noopener">@littlekeupon</a></div></li>
           </ul>
         </div>
         <div class="box">
           <form id="f">
-            <div class="row"><input name="nom" placeholder="Votre nom" required aria-label="Votre nom"><input name="tel" placeholder="Téléphone ou e-mail" required aria-label="Téléphone ou e-mail"></div>
+            <div class="row"><input name="nom" placeholder="Votre nom" required aria-label="Votre nom" autocomplete="name"><input name="contact" placeholder="Votre e-mail ou téléphone" required aria-label="Votre e-mail ou téléphone" autocomplete="email"></div>
             <select name="sujet" aria-label="Type de demande">
               <option>Soudure</option><option>Conception</option><option>Impression 3D</option><option>Mécanique</option><option>Électricité</option><option>Réparation électronique</option><option>Prêt de voiture (shooting)</option><option>Application de gestion</option><option>Autre</option>
             </select>
             <textarea name="msg" placeholder="Décrivez votre besoin" required aria-label="Votre message"></textarea>
             <button class="btn main" type="submit">Envoyer la demande</button>
+            <p id="msg" role="status"></p>
           </form>
         </div>
       </div>
@@ -300,7 +351,7 @@ footer a:hover{color:var(--lime)}
 
 <footer><div class="wrap"><span>© <span id="y"></span> Pascal Bernier</span><a href="mentions.html">Mentions légales</a></div></footer>
 
-<div class="callbar"><a class="btn" href="tel:+33656844919">Appeler</a><a class="btn main" href="#contact">Demander un devis</a></div>
+<div class="callbar"><a class="btn" href="mailto:PBMecatec@hotmail.com">Écrire</a><a class="btn main" href="#contact">Demander un devis</a></div>
 
 <script>
 // --- AVIS CLIENTS : uniquement de vrais avis, avec l'accord de la personne ---
@@ -319,7 +370,7 @@ if (AVIS.length) {
 }
 
 // --- À MODIFIER : adresse qui reçoit les demandes du formulaire ---
-const EMAIL = "pascal.bernier67@hotmail.fr";
+const EMAIL = "PBMecatec@hotmail.com";
 
 document.getElementById('y').textContent = new Date().getFullYear();
 
@@ -331,12 +382,35 @@ document.getElementById('y').textContent = new Date().getFullYear();
   document.getElementById('age').textContent = a + ' ans';
 })();
 
+
+// Apparition douce des sections
+const rv = new IntersectionObserver(es => es.forEach(x => { if (x.isIntersecting) { x.target.classList.add('in'); rv.unobserve(x.target); } }), { threshold: .08 });
+document.querySelectorAll('section .wrap').forEach(el => { el.classList.add('rv'); rv.observe(el); });
+
+// Menu : met en évidence la section affichée
+const links = [...document.querySelectorAll('nav ul a')];
+const so = new IntersectionObserver(es => es.forEach(x => {
+  if (x.isIntersecting) links.forEach(a => a.classList.toggle('act', a.getAttribute('href') === '#' + x.target.id));
+}), { rootMargin: '-45% 0px -50% 0px' });
+links.forEach(a => { const t = document.querySelector(a.getAttribute('href')); t && so.observe(t); });
+
+// Copier l'adresse e-mail
+const cp = document.getElementById('copyMail');
+cp && cp.addEventListener('click', async () => {
+  try { await navigator.clipboard.writeText(EMAIL); cp.textContent = 'Copié ✓'; } catch (e) { cp.textContent = 'Copie impossible'; }
+  setTimeout(() => cp.textContent = 'Copier', 2000);
+});
+
+// Les photos des créations ouvrent la galerie
+document.querySelectorAll('.shot').forEach(f => f.addEventListener('click', () => location.href = 'gallery.html'));
+
 // Formulaire : ouvre l'application e-mail avec la demande pré-remplie
 document.getElementById('f').addEventListener('submit', e => {
   e.preventDefault();
   const d = new FormData(e.target);
-  const body = `Nom : ${d.get('nom')}\nContact : ${d.get('tel')}\n\n${d.get('msg')}`;
+  const body = `Nom : ${d.get('nom')}\nContact : ${d.get('contact')}\n\n${d.get('msg')}`;
   location.href = `mailto:${EMAIL}?subject=${encodeURIComponent('Demande : ' + d.get('sujet'))}&body=${encodeURIComponent(body)}`;
+  document.getElementById('msg').textContent = 'Votre application e-mail s\'ouvre : il ne reste qu\'à envoyer le message.';
 });
 
 // Halo lumineux qui suit la souris sur les cartes

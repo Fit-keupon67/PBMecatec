@@ -161,26 +161,30 @@ function repoGuess() {
   const user = h.split('.')[0], part = location.pathname.split('/').filter(Boolean)[0];
   return user + '/' + (part && !/\.html?$/i.test(part) ? part : user + '.github.io');
 }
+const DEBUG = /[?&]debug/.test(location.search);
+const dbg = { repo: '', etat: 'non lancé', fichiers: 0, photos: [] };
 async function listRepoFiles(repo) {
-  const key = 'galerie:' + repo;
-  try { const c = sessionStorage.getItem(key); if (c) return JSON.parse(c); } catch (e) {}
+  const key = 'galerie:' + repo, TTL = 60000; /* la liste est conservée 1 minute seulement */
+  try { const c = JSON.parse(sessionStorage.getItem(key) || 'null'); if (c && Date.now() - c.t < TTL) { dbg.etat = 'liste en cache'; return c.files; } } catch (e) {}
   for (const ref of ['HEAD', 'main', 'master']) {
     try {
-      const r = await fetch(`https://api.github.com/repos/${repo}/git/trees/${ref}?recursive=1`);
+      const r = await fetch(`https://api.github.com/repos/${repo}/git/trees/${ref}?recursive=1`, { cache: 'no-store' });
+      dbg.etat = `GitHub (${ref}) : HTTP ${r.status}`;
       if (!r.ok) continue;
       const files = (await r.json()).tree.map(t => t.path);
-      try { sessionStorage.setItem(key, JSON.stringify(files)); } catch (e) {}
+      try { sessionStorage.setItem(key, JSON.stringify({ t: Date.now(), files })); } catch (e) {}
       return files;
-    } catch (e) {}
+    } catch (e) { dbg.etat = 'erreur réseau : ' + e.message; }
   }
   return [];
 }
 async function loadFolderPhotos() {
-  const repo = repoGuess(); if (!repo) return;
+  const repo = repoGuess(); dbg.repo = repo || '(introuvable : renseigner REPO)'; if (!repo) return;
   const ids = TABS.map(t => t.id).filter(i => i !== 'tout');
   const byName = new Map();
   const known = new Set(PHOTOS.map(p => p.src.split('/').pop().toLowerCase()));
-  (await listRepoFiles(repo)).forEach(path => {
+  const all = await listRepoFiles(repo); dbg.fichiers = all.length;
+  all.forEach(path => {
     const m = path.match(/^galerie\/([^/]+)\/([^/]+)$/);
     if (!m || !ids.includes(m[1]) || !IMG_EXT.test(m[2])) return;
     const name = m[2].toLowerCase();
@@ -189,7 +193,7 @@ async function loadFolderPhotos() {
     const titre = m[2].replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ').trim();
     byName.set(name, { src: path.split('/').map(encodeURIComponent).join('/'), titre: titre.charAt(0).toUpperCase() + titre.slice(1), cat: [m[1]], full: true });
   });
-  byName.forEach(p => PHOTOS.push(p));
+  byName.forEach(p => { PHOTOS.push(p); dbg.photos.push(p.src); });
 }
 
 const lb = document.getElementById('lb'), lbi = lb.querySelector('img'), lbp = lb.querySelector('p');
@@ -205,7 +209,12 @@ lb.addEventListener('touchend', e => { const d = e.changedTouches[0].clientX - t
 addEventListener('keydown', e => { if (!lb.classList.contains('open')) return; if (e.key === 'Escape') close(); if (e.key === 'ArrowLeft') open(cur - 1); if (e.key === 'ArrowRight') open(cur + 1); });
 buildTabs();
 show(location.hash.slice(1) || 'tout');
-loadFolderPhotos().then(() => { buildTabs(); show(currentId); }).catch(() => {});
+loadFolderPhotos().then(() => { buildTabs(); show(currentId); }).catch(e => { dbg.etat = 'erreur : ' + e.message; }).finally(() => {
+  if (!DEBUG) return;
+  const d = document.createElement('pre'); d.style.cssText = 'margin:20px;padding:14px;border:1px dashed #c9f31d;border-radius:10px;white-space:pre-wrap;color:#eef1ea;font-size:.8rem';
+  d.textContent = 'DIAGNOSTIC\nDépôt détecté : ' + dbg.repo + '\nÉtat : ' + dbg.etat + '\nFichiers vus dans le dépôt : ' + dbg.fichiers + '\nPhotos ajoutées automatiquement : ' + (dbg.photos.join(', ') || 'aucune');
+  document.body.appendChild(d);
+});
 addEventListener('hashchange', () => show(location.hash.slice(1) || 'tout'));
 </script>
 </body>

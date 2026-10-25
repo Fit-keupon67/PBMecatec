@@ -176,7 +176,7 @@ function render() {
   loadEl.hidden = true; emptyEl.hidden = tools.length > 0; grid.innerHTML = '';
   tools.forEach((o, i) => {
     const a = document.createElement('article'); a.className = 'tool' + (o.dispo ? '' : ' off');
-    a.innerHTML = `<button class="ph" type="button" data-zoom="${i}" aria-label="Agrandir la photo : ${esc(o.nom)}">🧰${o.photo ? `<img src="${esc(o.photo)}" alt="${esc(o.nom)}" loading="lazy" decoding="async" onerror="this.remove()">` : ''}</button>
+    a.innerHTML = `<button class="ph" type="button" data-zoom="${i}" aria-label="Agrandir la photo : ${esc(o.nom)}">${o.photo ? `<img src="${esc(o.photo)}" alt="${esc(o.nom)}" loading="lazy" decoding="async" onerror="this.parentNode.insertAdjacentHTML('afterbegin','🧰');this.remove()">` : '🧰'}</button>
       <div class="bd"><h3>${esc(o.nom)}</h3>${o.desc ? `<p>${esc(o.desc)}</p>` : ''}
       <div class="ft">${o.dispo ? (o.prix ? `<span class="px">${esc(o.prix)}</span>` : '<span class="badge">Tarif sur demande</span>') : '<span class="badge">Actuellement indisponible</span>'}
       <button class="btn main sm" type="button" data-ask="${i}" ${o.dispo ? '' : 'disabled'}>Demander</button></div></div>`;

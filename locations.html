@@ -23,11 +23,30 @@ header{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);background:rg
 nav{display:flex;align-items:center;justify-content:space-between;height:56px}
 .logo{display:inline-flex;align-items:center;font-family:var(--head);font-weight:700}
 .logo-img{display:block;height:48px;width:auto;border-radius:8px;box-shadow:0 0 0 1px rgba(255,255,255,.07)}
-.tabs{display:flex;gap:6px}
-.tabs a{font-family:var(--head);font-weight:600;font-size:.85rem;padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:var(--bg2);color:var(--text);white-space:nowrap;transition:border-color .2s,background .2s}
-.tabs a:hover{border-color:var(--lime)}
-.tabs a[aria-current=page]{background:var(--lime);color:#10140a;border-color:var(--lime)}
-@media(max-width:900px){.logo-img{height:40px}nav{flex-wrap:wrap;height:auto;padding:8px 0 10px;row-gap:8px}.tabs{order:3;width:100%;overflow-x:auto;scrollbar-width:none}}
+/* menu lateral : tuiles des pages */
+.menuBtn{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--bg2);color:var(--text);font-family:var(--head);font-weight:600;font-size:.85rem;cursor:pointer;transition:border-color .2s,background .2s}
+.menuBtn:hover{border-color:var(--lime);background:#374453}
+.menuBtn:focus-visible{outline:2px solid var(--lime);outline-offset:2px}
+.scrim{position:fixed;inset:0;z-index:40;background:rgba(8,11,15,.64);opacity:0;transition:opacity .25s}
+.scrim.on{opacity:1}
+.sideNav{position:fixed;top:0;left:0;bottom:0;z-index:41;width:min(340px,86vw);display:flex;flex-direction:column;background:#1c2530;border-right:1px solid var(--line);box-shadow:24px 0 60px rgba(0,0,0,.45);transform:translateX(-102%);visibility:hidden;transition:transform .3s cubic-bezier(.2,.7,.2,1),visibility 0s linear .3s;overflow:hidden}
+.sideNav.open{transform:none;visibility:visible;transition:transform .3s cubic-bezier(.2,.7,.2,1),visibility 0s}
+.railBrand{display:flex;align-items:center;justify-content:space-between;gap:10px;height:56px;flex:none;padding:0 12px;border-bottom:1px solid var(--line)}
+.railBrand img{display:block;height:38px;width:auto;border-radius:7px;box-shadow:0 0 0 1px rgba(255,255,255,.07)}
+.sideNav-body{flex:1;min-height:0;display:flex;flex-direction:column;gap:9px;padding:14px 14px calc(14px + env(safe-area-inset-bottom));overflow-y:auto}
+.sideNav-title{font-family:var(--head);font-weight:600;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:0 4px 2px}
+.sideNav-foot{margin-top:auto;padding:14px 4px 0;color:var(--muted);font-size:.74rem;line-height:1.4;opacity:.8}
+.sideNav-close{width:38px;height:38px;flex:none;border-radius:11px;border:1px solid var(--line);background:var(--bg2);color:var(--text);font-size:1rem;line-height:1;cursor:pointer;transition:border-color .2s}
+.sideNav-close:hover{border-color:var(--lime)}
+.navTile{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--bg2);color:var(--text);transition:border-color .2s,background .2s,transform .2s}
+.navTile:hover,.navTile:focus-visible{border-color:var(--lime);transform:translateX(3px)}
+.navTile .ico{flex:none;width:42px;height:42px;display:grid;place-items:center;border-radius:12px;background:rgba(201,243,29,.12);font-size:1.15rem}
+.navTile b{display:block;font-family:var(--head);font-weight:600;font-size:.98rem;line-height:1.2}
+.navTile small{display:block;margin-top:3px;color:var(--muted);font-size:.78rem;line-height:1.3}
+.navTile[aria-current=page]{border-color:var(--lime);background:rgba(201,243,29,.10)}
+.navTile[aria-current=page] b{color:var(--lime)}
+body.navOpen{overflow:hidden}
+@media(max-width:900px){.logo-img{height:40px}nav{flex-wrap:wrap;height:auto;padding:8px 0 10px;row-gap:8px}.menuBtn{width:44px;height:44px;padding:0;justify-content:center}.menuBtn span{display:none}}
 .btn{display:inline-flex;align-items:center;gap:8px;font:inherit;font-family:var(--head);font-weight:600;font-size:.95rem;padding:11px 20px;border-radius:999px;border:1px solid var(--line);background:var(--bg2);color:var(--text);cursor:pointer;transition:transform .2s,box-shadow .2s,border-color .2s}
 .btn:hover{transform:translateY(-2px);border-color:var(--lime)}
 .btn.main{background:var(--lime);color:#10140a;border-color:var(--lime)}
@@ -70,13 +89,54 @@ dialog h2{font-size:1.3rem;margin-bottom:12px}
 #zoom{padding:0;background:none;border:0;width:auto;max-width:94vw;overflow:visible}
 #zoom img{display:block;max-width:94vw;max-height:84vh;border-radius:12px;cursor:zoom-out}
 #zoom p{text-align:center;color:var(--muted);margin-top:8px}
+.pageTitle{display:none;font-family:var(--head);font-weight:600;font-size:.9rem;color:var(--muted);letter-spacing:.02em}
+
+/* rail fixe (ordinateur) */
+@media(min-width:1100px){
+  .sideNav{transform:none;visibility:visible;width:236px;box-shadow:none}
+  .sideNav-close{display:none}
+  .sideNav-body{padding:12px;gap:8px}
+  .navTile{padding:10px;gap:10px;border-radius:12px}
+  .navTile .ico{width:38px;height:38px;border-radius:10px;font-size:1.05rem}
+  .navTile b{font-size:.93rem}
+  .navTile small{font-size:.73rem}
+  .menuBtn{display:none}
+  .scrim{display:none}
+  body{padding-left:236px}
+  header .logo{display:none}
+  header nav{justify-content:flex-start}
+  header nav ul{margin-left:auto}
+  .pageTitle{display:block}
+  body.navOpen{overflow-x:hidden;overflow-y:auto}
+}
 </style>
 </head>
 <body>
 <header><div class="wrap"><nav aria-label="Navigation principale">
   <a href="index.html" class="logo"><img class="logo-img" src="logo/logo.jpg" alt="PBMecatec" width="480" height="186"></a>
-  <div class="tabs" aria-label="Pages du site"><a href="index.html">Accueil</a><a href="gallery.html">Galerie photos</a><a href="locations.html" aria-current="page">Locations</a><a href="dons.html">J'accepte vos dons matériel</a></div>
+  <span class="pageTitle">Locations</span>
+  <button type="button" class="menuBtn" id="menuBtn" aria-expanded="false" aria-controls="sideNav" aria-label="Ouvrir le menu des pages">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    <span>Pages</span>
+  </button>
 </nav></div></header>
+
+<div class="scrim" id="scrim" hidden></div>
+<div class="sideNav" id="sideNav" role="navigation" aria-label="Pages du site">
+  <div class="railBrand">
+    <a href="index.html"><img src="logo/logo.jpg" alt="PBMecatec — Accueil" width="480" height="186"></a>
+    <button type="button" class="sideNav-close" id="navClose" aria-label="Fermer le menu">✕</button>
+  </div>
+  <div class="sideNav-body">
+    <p class="sideNav-title">Pages du site</p>
+  <a class="navTile" href="index.html"><span class="ico" aria-hidden="true">🏠</span><span><b>Accueil</b><small>Présentation, prestations et contact</small></span></a>
+  <a class="navTile" href="gallery.html"><span class="ico" aria-hidden="true">🖼️</span><span><b>Galerie photos</b><small>Réalisations, véhicules et projets</small></span></a>
+  <a class="navTile" href="locations.html" aria-current="page"><span class="ico" aria-hidden="true">🧰</span><span><b>Locations</b><small>Outils de l'atelier à louer</small></span></a>
+  <a class="navTile" href="dons.html"><span class="ico" aria-hidden="true">🎁</span><span><b>Dons</b><small>J'accepte vos dons matériel</small></span></a>
+
+  <p class="sideNav-foot">Mécanique · Soudure · Électronique</p>
+  </div>
+</div>
 
 <main class="wrap">
   <h1>Location de matériel</h1>
@@ -209,6 +269,49 @@ f.addEventListener('submit', async e => {
 });
 
 load();
+</script>
+<script>
+// Menu lateral des pages (tuiles)
+(() => {
+  const btn = document.getElementById('menuBtn');
+  const panel = document.getElementById('sideNav');
+  const scrim = document.getElementById('scrim');
+  const close = document.getElementById('navClose');
+  if (!btn || !panel || !scrim || !close) return;
+  let timer;
+  const open = () => {
+    clearTimeout(timer);
+    scrim.hidden = false;
+    requestAnimationFrame(() => scrim.classList.add('on'));
+    panel.classList.add('open');
+    btn.setAttribute('aria-expanded', 'true');
+    document.body.classList.add('navOpen');
+    requestAnimationFrame(() => close.focus());
+  };
+  const shut = () => {
+    panel.classList.remove('open');
+    scrim.classList.remove('on');
+    btn.setAttribute('aria-expanded', 'false');
+    document.body.classList.remove('navOpen');
+    clearTimeout(timer);
+    timer = setTimeout(() => { if (!panel.classList.contains('open')) scrim.hidden = true; }, 280);
+    btn.focus();
+  };
+  btn.addEventListener('click', open);
+  close.addEventListener('click', shut);
+  scrim.addEventListener('click', shut);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && panel.classList.contains('open')) shut(); });
+  const wide = matchMedia('(min-width:1100px)');
+  const reset = () => {
+    if (!wide.matches) return;
+    panel.classList.remove('open');
+    scrim.classList.remove('on');
+    scrim.hidden = true;
+    btn.setAttribute('aria-expanded', 'false');
+    document.body.classList.remove('navOpen');
+  };
+  wide.addEventListener('change', reset);
+})();
 </script>
 </body>
 </html>

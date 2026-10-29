@@ -27,7 +27,7 @@ Disponible: oui
 Photo: dechetterie.webp
 Titre: Trajet déchetterie
 Prix: 25 € / trajet (+ 0.50€/km)
-Description: Coffre 300L pour petit meuble démonté, de la vaisselle, des vêtements, du bois ou du petit bazar de garage,...(+ Frais de nettoyage en cas de déchets très sales à discuter)
+Description: Coffre 600L pour petit meuble démonté, de la vaisselle, des vêtements, du bois ou du petit bazar de garage,...(+ Frais de nettoyage en cas de déchets très sales à discuter)
 Disponible: oui
 
 # Pour un deuxième outil, copiez le bloc ci-dessus sous cette ligne :

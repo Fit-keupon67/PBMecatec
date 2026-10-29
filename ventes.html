@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ventes de matériel – PBMecatec</title>
+<meta name="description" content="Outils et matériel de l'atelier à vendre : photos, prix et demande d'achat en ligne.">
+<meta name="theme-color" content="#232e3a">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔧</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#232e3a;--bg2:#2f3c4a;--line:#45525f;--text:#f4f7f1;--muted:#bac5d0;--lime:#c9f31d;--amber:#ffb020;--head:'Chakra Petch',system-ui,sans-serif;--body:'Outfit',system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:radial-gradient(1100px 600px at 50% -15%,#33414f 0%,var(--bg) 65%);color:var(--text);font-family:var(--body);font-weight:300;line-height:1.5;min-height:100vh}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(600px 400px at 85% 0%,rgba(201,243,29,.12),transparent 70%),linear-gradient(var(--line) 1px,transparent 1px) 0 0/48px 48px,linear-gradient(90deg,var(--line) 1px,transparent 1px) 0 0/48px 48px;-webkit-mask-image:linear-gradient(#000 30%,transparent);mask-image:linear-gradient(#000 30%,transparent)}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--lime);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+h1,h2,h3{font-family:var(--head);letter-spacing:-.01em;line-height:1.1}
+header{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);background:rgba(25,34,44,.82);border-bottom:1px solid var(--line)}
+nav{display:flex;align-items:center;justify-content:space-between;height:56px}
+.logo{display:inline-flex;align-items:center;font-family:var(--head);font-weight:700}
+.logo-img{display:block;height:48px;width:auto;border-radius:8px;box-shadow:0 0 0 1px rgba(255,255,255,.07)}
+/* menu lateral : tuiles des pages */
+.menuBtn{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--bg2);color:var(--text);font-family:var(--head);font-weight:600;font-size:.85rem;cursor:pointer;transition:border-color .2s,background .2s}
+.menuBtn:hover{border-color:var(--lime);background:#374453}
+.menuBtn:focus-visible{outline:2px solid var(--lime);outline-offset:2px}
+.scrim{position:fixed;inset:0;z-index:40;background:rgba(8,11,15,.64);opacity:0;transition:opacity .25s}
+.scrim.on{opacity:1}
+.sideNav{position:fixed;top:0;left:0;bottom:0;z-index:41;width:min(340px,86vw);display:flex;flex-direction:column;background:#1c2530;border-right:1px solid var(--line);box-shadow:24px 0 60px rgba(0,0,0,.45);transform:translateX(-102%);visibility:hidden;transition:transform .3s cubic-bezier(.2,.7,.2,1),visibility 0s linear .3s;overflow:hidden}
+.sideNav.open{transform:none;visibility:visible;transition:transform .3s cubic-bezier(.2,.7,.2,1),visibility 0s}
+.railBrand{display:flex;align-items:center;justify-content:space-between;gap:10px;height:56px;flex:none;padding:0 12px;border-bottom:1px solid var(--line)}
+.railBrand img{display:block;height:38px;width:auto;border-radius:7px;box-shadow:0 0 0 1px rgba(255,255,255,.07)}
+.sideNav-body{flex:1;min-height:0;display:flex;flex-direction:column;gap:9px;padding:14px 14px calc(14px + env(safe-area-inset-bottom));overflow-y:auto}
+.sideNav-title{font-family:var(--head);font-weight:600;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:0 4px 2px}
+.sideNav-foot{margin-top:auto;padding:14px 4px 0;color:var(--muted);font-size:.74rem;line-height:1.4;opacity:.8}
+.sideNav-close{width:38px;height:38px;flex:none;border-radius:11px;border:1px solid var(--line);background:var(--bg2);color:var(--text);font-size:1rem;line-height:1;cursor:pointer;transition:border-color .2s}
+.sideNav-close:hover{border-color:var(--lime)}
+.navTile{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--bg2);color:var(--text);transition:border-color .2s,background .2s,transform .2s}
+.navTile:hover,.navTile:focus-visible{border-color:var(--lime);transform:translateX(3px)}
+.navTile .ico{flex:none;width:42px;height:42px;display:grid;place-items:center;border-radius:12px;font-size:1.15rem}
+.navTile b{display:block;font-family:var(--head);font-weight:600;font-size:.98rem;line-height:1.2}
+.navTile small{display:block;margin-top:3px;color:var(--muted);font-size:.78rem;line-height:1.3}
+.navTile[aria-current=page]{border-color:var(--lime);background:rgba(201,243,29,.10)}
+.navTile[aria-current=page] b{color:var(--lime)}
+body.navOpen{overflow:hidden}
+@media(max-width:900px){.logo-img{height:40px}nav{flex-wrap:wrap;height:auto;padding:8px 0 10px;row-gap:8px}.menuBtn{width:44px;height:44px;padding:0;justify-content:center}.menuBtn span{display:none}}
+.btn{display:inline-flex;align-items:center;gap:8px;font:inherit;font-family:var(--head);font-weight:600;font-size:.95rem;padding:11px 20px;border-radius:999px;border:1px solid var(--line);background:var(--bg2);color:var(--text);cursor:pointer;transition:transform .2s,box-shadow .2s,border-color .2s}
+.btn:hover{transform:translateY(-2px);border-color:var(--lime)}
+.btn.main{background:var(--lime);color:#10140a;border-color:var(--lime)}
+.btn.main:hover{box-shadow:0 8px 30px rgba(201,243,29,.35)}
+.btn.sm{padding:7px 16px;font-size:.85rem}
+.btn[disabled]{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+h1{font-size:clamp(1.8rem,4vw,2.6rem);margin:30px 0 8px}
+.sub{color:var(--muted);margin-bottom:22px;max-width:62ch}
+.box{background:var(--bg2);border:1px solid var(--line);border-radius:18px;padding:18px 22px}
+.empty{color:var(--muted);padding:40px 20px;text-align:center;border:1px dashed var(--line);border-radius:16px}
+.foot{text-align:center;color:var(--muted);font-size:.85rem;padding:30px 0 28px}.foot a:hover{color:var(--lime)}
+form{display:grid;gap:10px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+input,select,textarea{width:100%;font:inherit;font-size:.92rem;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;transition:border-color .2s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--lime)}
+textarea{resize:vertical;min-height:70px}
+.hp{position:absolute!important;left:-9999px;width:1px;height:1px;opacity:0}
+.st{font-size:.85rem;min-height:1.2em}
+.legal{font-size:.75rem;color:var(--muted);line-height:1.4}.legal a{text-decoration:underline}
+@media(max-width:520px){.row{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.tools{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;padding-bottom:10px}
+.tool{display:flex;flex-direction:column;background:var(--bg2);border:1px solid var(--line);border-radius:16px;overflow:hidden;transition:transform .25s,border-color .25s}
+.tool:hover{transform:translateY(-3px);border-color:rgba(201,243,29,.5)}
+.ph{aspect-ratio:4/3;display:grid;place-items:center;font-size:2.6rem;background:radial-gradient(circle at 50% 60%,#394655,#26313b);cursor:zoom-in;position:relative;border:0;width:100%;color:inherit}
+.ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tool .bd{display:flex;flex-direction:column;gap:6px;padding:14px 16px 16px;flex:1}
+.tool h3{font-size:1.1rem}
+.tool p{color:var(--muted);font-size:.9rem}
+.ft{margin-top:auto;padding-top:10px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.px{font-family:var(--head);font-weight:600;color:var(--lime)}
+.badge{font-size:.72rem;font-family:var(--head);font-weight:600;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:2px 10px}
+.tool.off .ph{filter:grayscale(1) opacity(.5)}
+.tool.off h3,.tool.off p{opacity:.55}
+.tool.off .badge{border-color:var(--muted)}
+dialog{margin:auto;background:var(--bg2);color:var(--text);border:1px solid var(--line);border-radius:18px;padding:20px 22px;width:min(480px,calc(100% - 32px));max-height:calc(100% - 32px);overflow:auto}
+dialog::backdrop{background:rgba(10,14,19,.86);backdrop-filter:blur(6px)}
+dialog h2{font-size:1.3rem;margin-bottom:12px}
+.dhead{display:flex;justify-content:space-between;align-items:start;gap:12px}
+.x{background:var(--bg);border:1px solid var(--line);color:var(--text);width:34px;height:34px;border-radius:50%;cursor:pointer;flex:none}.x:hover{border-color:var(--lime)}
+#zoom{padding:0;background:none;border:0;width:auto;max-width:94vw;overflow:visible}
+#zoom img{display:block;max-width:94vw;max-height:84vh;border-radius:12px;cursor:zoom-out}
+#zoom p{text-align:center;color:var(--muted);margin-top:8px}
+.pageTitle{display:none;font-family:var(--head);font-weight:600;font-size:.9rem;color:var(--muted);letter-spacing:.02em}
+
+/* rail fixe (ordinateur) */
+@media(min-width:1100px){
+  .sideNav{transform:none;visibility:visible;width:236px;box-shadow:none}
+  .sideNav-close{display:none}
+  .sideNav-body{padding:12px;gap:8px}
+  .navTile{padding:10px;gap:10px;border-radius:12px}
+  .navTile .ico{width:38px;height:38px;border-radius:10px;font-size:1.05rem}
+  .navTile b{font-size:.93rem}
+  .navTile small{font-size:.73rem}
+  .menuBtn{display:none}
+  .scrim{display:none}
+  body{padding-left:236px}
+  header .logo{display:none}
+  header nav{justify-content:flex-start}
+  header nav ul{margin-left:auto}
+  .pageTitle{display:block}
+  body.navOpen{overflow-x:hidden;overflow-y:auto}
+}
+</style>
+</head>
+<body>
+<header><div class="wrap"><nav aria-label="Navigation principale">
+  <a href="index.html" class="logo"><img class="logo-img" src="logo/logo.jpg" alt="PBMecatec" width="480" height="186"></a>
+  <span class="pageTitle">Ventes</span>
+  <button type="button" class="menuBtn" id="menuBtn" aria-expanded="false" aria-controls="sideNav" aria-label="Ouvrir le menu des pages">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    <span>Pages</span>
+  </button>
+</nav></div></header>
+
+<div class="scrim" id="scrim" hidden></div>
+<div class="sideNav" id="sideNav" role="navigation" aria-label="Pages du site">
+  <div class="railBrand">
+    <a href="index.html"><img src="logo/logo.jpg" alt="PBMecatec — Accueil" width="480" height="186"></a>
+    <button type="button" class="sideNav-close" id="navClose" aria-label="Fermer le menu">✕</button>
+  </div>
+  <div class="sideNav-body">
+    <p class="sideNav-title">Pages du site</p>
+  <a class="navTile" href="index.html"><span class="ico" aria-hidden="true">🏠</span><span><b>Accueil</b><small>Présentation, prestations et contact</small></span></a>
+  <a class="navTile" href="gallery.html"><span class="ico" aria-hidden="true">🖼️</span><span><b>Galerie photos</b><small>Réalisations, véhicules et projets</small></span></a>
+  <a class="navTile" href="locations.html"><span class="ico" aria-hidden="true">🧰</span><span><b>Locations</b><small>Outils de l'atelier à louer</small></span></a>
+  <a class="navTile" href="ventes.html" aria-current="page"><span class="ico" aria-hidden="true">🏷️</span><span><b>Ventes</b><small>Outils et matériel à vendre</small></span></a>
+  <a class="navTile" href="dons.html"><span class="ico" aria-hidden="true">🎁</span><span><b>Dons</b><small>J'accepte vos dons matériel</small></span></a>
+
+  <p class="sideNav-foot">Mécanique · Soudure · Électronique</p>
+  </div>
+</div>
+
+<main class="wrap">
+  <h1>Matériel à vendre</h1>
+  <p class="sub">Des outils et du matériel de mon atelier à vendre. Choisissez l'article qui vous intéresse et envoyez une demande : je vous confirme la disponibilité, le prix et les modalités de remise par e-mail.</p>
+  <p id="load" class="empty">Chargement des articles…</p>
+  <div class="tools" id="grid"></div>
+  <p id="empty" class="empty" hidden>Aucun article à vendre pour le moment. Écrivez-moi si vous cherchez quelque chose de précis.</p>
+</main>
+<footer class="foot"><a href="index.html">Accueil</a> · <a href="mentions.html">Mentions légales</a></footer>
+
+<dialog id="dlg" aria-labelledby="dTitle">
+  <div class="dhead"><h2 id="dTitle">Demande d'achat</h2><button class="x" type="button" id="dx" aria-label="Fermer">✕</button></div>
+  <form id="f">
+    <div class="row"><input name="nom" placeholder="Votre nom" required aria-label="Votre nom" autocomplete="name"><input name="email" type="email" placeholder="Votre e-mail" required aria-label="Votre e-mail" autocomplete="email"></div>
+    <div class="row"><input name="tel" type="tel" placeholder="Téléphone (facultatif)" aria-label="Téléphone (facultatif)" autocomplete="tel"><input name="dates" placeholder="Mode / dates souhaités" required aria-label="Mode / dates souhaités"></div>
+    <textarea name="msg" placeholder="Précisions ou offre de prix (facultatif)" maxlength="1500" aria-label="Précisions ou offre de prix"></textarea>
+    <input class="hp" name="site" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <button class="btn main" type="submit">Envoyer la demande</button>
+    <p class="st" id="st" role="status"></p>
+    <p class="legal">En envoyant ce formulaire, vous acceptez que ces informations me soient transmises pour répondre à votre demande. <a href="mentions.html#donnees">En savoir plus</a></p>
+  </form>
+</dialog>
+
+<dialog id="zoom" aria-label="Photo agrandie"><img alt=""><p></p></dialog>
+
+<script src="donnees.js"></script>
+<script>
+/* ===== AJOUTER UN ARTICLE À VENDRE =====
+   Tout se passe dans le dossier  ventes/  :
+     1) déposez-y la photo de l'article (ex. perceuse.jpg)
+     2) ouvrez le fichier  ventes/ventes.txt  et ajoutez un bloc :
+          Photo: perceuse.jpg
+          Titre: Perceuse à colonne
+          Prix: 120 €
+          Description: Très bon état, vendue avec ses mors.
+          Disponible: oui   (mettre "non" quand c'est vendu)
+   Rien à modifier dans ce fichier HTML. Ces photos n'apparaissent jamais dans la galerie. */
+const OUTILS_FILE = "ventes/ventes.txt";
+
+// ===== SERVICE D'ENVOI : même adresse que sur index.html (à changer aux deux endroits si elle change) =====
+const API_URL = "https://script.google.com/macros/s/AKfycbxAvpIE5mm2_YU8y0mAQCIhU3_s0dXIjdkQSBktzFI7EE1-sNMc3c_iev1NuF9rVsf2/exec";
+const EMAIL = "PBMecatec@hotmail.com";
+const T0 = Date.now();
+function envoyer(type, data) {
+  return new Promise((resolve, reject) => {
+    const name = 'tx' + Date.now();
+    const ifr = document.createElement('iframe'); ifr.name = name; ifr.title = 'envoi'; ifr.style.display = 'none'; ifr.setAttribute('aria-hidden', 'true');
+    const form = document.createElement('form'); form.method = 'POST'; form.action = API_URL; form.target = name; form.acceptCharset = 'UTF-8'; form.style.display = 'none';
+    const inp = document.createElement('input'); inp.type = 'hidden'; inp.name = 'payload'; inp.value = JSON.stringify({ type, delay: Date.now() - T0, ...data });
+    form.appendChild(inp); document.body.append(ifr, form);
+    const t1 = Date.now(); let done = false, tm;
+    const end = err => { if (done) return; done = true; clearTimeout(tm); setTimeout(() => { ifr.remove(); form.remove(); }, 500); err ? reject(new Error(err)) : resolve(); };
+    ifr.addEventListener('load', () => { if (Date.now() - t1 > 300) end(); });
+    tm = setTimeout(() => end('délai dépassé'), 25000);
+    form.submit();
+  });
+}
+const say = (el, txt, ok) => { el.textContent = txt; el.style.color = ok ? 'var(--lime)' : '#ff8a7a'; };
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+const grid = document.getElementById('grid'), emptyEl = document.getElementById('empty'), loadEl = document.getElementById('load');
+let tools = [];
+const enc = p => p.split('/').map(encodeURIComponent).join('/');
+const decode = buf => { try { return new TextDecoder('utf-8', { fatal: true }).decode(buf); } catch (e) { return new TextDecoder('windows-1252').decode(buf); } };
+
+function parseOutils(t) {
+  const map = { photo: 'photo', image: 'photo', titre: 'nom', nom: 'nom', prix: 'prix', description: 'desc', desc: 'desc', disponible: 'dispo', dispo: 'dispo' };
+  const list = []; let o = null, cur = 'desc';
+  const push = () => { if (o && (o.nom || o.photo)) list.push(o); o = null; };
+  t.replace(/^\uFEFF/, '').split(/\r?\n/).forEach(l => {
+    if (/^\s*(-{3,}|={3,})\s*$/.test(l)) { push(); return; }
+    if (/^\s*#/.test(l)) return;
+    const m = l.match(/^\s*(photo|image|titre|nom|prix|description|desc|disponible|dispo)\s*:\s*(.*)$/i);
+    if (m) {
+      const k = map[m[1].toLowerCase()];
+      if (k === 'photo' && o && o.photo !== undefined) push();
+      if (!o) o = {};
+      cur = k; o[k] = m[2].trim();
+    } else if (l.trim() && o) o[cur] = ((o[cur] || '') + ' ' + l.trim()).trim();
+  });
+  push();
+  return list.map(o => ({
+    photo: o.photo ? enc('ventes/' + o.photo.replace(/^\/?ventes\//i, '')) : '',
+    nom: o.nom || (o.photo ? o.photo.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ') : 'Article'),
+    desc: o.desc || '', prix: o.prix || '',
+    dispo: !/^(non|no|0|faux|indispo|vendu|lou)/i.test(o.dispo || 'oui')
+  }));
+}
+const CANDIDATS = ['ventes/ventes.txt', 'ventes/Ventes.txt', 'ventes/articles.txt'];
+async function load() {
+  let txt = null, last = '';
+  for (const p of CANDIDATS) {
+    try { const r = await fetch(p, { cache: 'no-cache' }); if (r.ok) { txt = decode(await r.arrayBuffer()); break; } last = 'HTTP ' + r.status; }
+    catch (e) { last = 'lecture bloquée par le navigateur'; break; }
+  }
+  /* ouverture locale (double-clic) : lecture via donnees.js, généré par mettre-a-jour.ps1 */
+  if (txt === null && window.SITE_DATA && typeof SITE_DATA.ventes === 'string') txt = SITE_DATA.ventes;
+  if (txt !== null) tools = parseOutils(txt);
+  else { tools = []; emptyEl.textContent = 'Impossible de lire ventes/ventes.txt (' + last + '). Sur le site en ligne, vérifiez que le fichier est publié dans le dossier ventes/. En local (double-clic), lancez d\'abord mettre-a-jour.ps1.'; }
+  render();
+}
+
+function render() {
+  loadEl.hidden = true; emptyEl.hidden = tools.length > 0; grid.innerHTML = '';
+  tools.forEach((o, i) => {
+    const a = document.createElement('article'); a.className = 'tool' + (o.dispo ? '' : ' off');
+    a.innerHTML = `<button class="ph" type="button" data-zoom="${i}" aria-label="Agrandir la photo : ${esc(o.nom)}">${o.photo ? `<img src="${esc(o.photo)}" alt="${esc(o.nom)}" loading="lazy" decoding="async" onerror="this.parentNode.insertAdjacentHTML('afterbegin','🏷️');this.remove()">` : '🏷️'}</button>
+      <div class="bd"><h3>${esc(o.nom)}</h3>${o.desc ? `<p>${esc(o.desc)}</p>` : ''}
+      <div class="ft">${o.dispo ? (o.prix ? `<span class="px">${esc(o.prix)}</span>` : '<span class="badge">Prix sur demande</span>') : '<span class="badge">Vendu / indisponible</span>'}
+      <button class="btn main sm" type="button" data-ask="${i}" ${o.dispo ? '' : 'disabled'}>${o.dispo ? 'Je suis intéressé' : 'Indisponible'}</button></div></div>`;
+    grid.appendChild(a);
+  });
+}
+
+const dlg = document.getElementById('dlg'), zoom = document.getElementById('zoom'), f = document.getElementById('f'), st = document.getElementById('st');
+let cur = null;
+grid.addEventListener('click', e => {
+  const z = e.target.closest('[data-zoom]'), q = e.target.closest('[data-ask]');
+  if (z) { const o = tools[+z.dataset.zoom]; if (!o.photo) return; const im = zoom.querySelector('img'); im.src = o.photo; im.alt = o.nom; zoom.querySelector('p').textContent = o.nom; zoom.showModal(); }
+  if (q && !q.disabled) { cur = tools[+q.dataset.ask]; document.getElementById('dTitle').textContent = 'Acheter : ' + cur.nom; st.textContent = ''; dlg.showModal(); }
+});
+zoom.addEventListener('click', () => zoom.close());
+document.getElementById('dx').onclick = () => dlg.close();
+dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
+
+f.addEventListener('submit', async e => {
+  e.preventDefault();
+  const x = f.elements, btn = f.querySelector('button[type=submit]');
+  if (!API_URL) return say(st, "L'envoi en ligne n'est pas activé. Écrivez-moi à " + EMAIL + ".", false);
+  btn.disabled = true; say(st, 'Envoi en cours…', true);
+  try {
+    await envoyer('location', { nom: x.nom.value, email: x.email.value, tel: x.tel.value, outil: cur.nom, article: cur.nom, prix: cur.prix, dates: x.dates ? x.dates.value : (x.remise ? x.remise.value : ''), remise: x.remise ? x.remise.value : '', msg: x.msg.value, site: x.site.value });
+    f.reset(); say(st, 'Merci ! Votre demande est envoyée, je vous réponds rapidement.', true);
+  } catch (err) { say(st, "Envoi impossible pour le moment. Écrivez-moi à " + EMAIL + ". (détail : " + err.message + ")", false); }
+  btn.disabled = false;
+});
+
+load();
+</script>
+<script>
+// Menu lateral des pages (tuiles)
+(() => {
+  const btn = document.getElementById('menuBtn');
+  const panel = document.getElementById('sideNav');
+  const scrim = document.getElementById('scrim');
+  const close = document.getElementById('navClose');
+  if (!btn || !panel || !scrim || !close) return;
+  let timer;
+  const open = () => {
+    clearTimeout(timer);
+    scrim.hidden = false;
+    requestAnimationFrame(() => scrim.classList.add('on'));
+    panel.classList.add('open');
+    btn.setAttribute('aria-expanded', 'true');
+    document.body.classList.add('navOpen');
+    requestAnimationFrame(() => close.focus());
+  };
+  const shut = () => {
+    panel.classList.remove('open');
+    scrim.classList.remove('on');
+    btn.setAttribute('aria-expanded', 'false');
+    document.body.classList.remove('navOpen');
+    clearTimeout(timer);
+    timer = setTimeout(() => { if (!panel.classList.contains('open')) scrim.hidden = true; }, 280);
+    btn.focus();
+  };
+  btn.addEventListener('click', open);
+  close.addEventListener('click', shut);
+  scrim.addEventListener('click', shut);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && panel.classList.contains('open')) shut(); });
+  const wide = matchMedia('(min-width:1100px)');
+  const reset = () => {
+    if (!wide.matches) return;
+    panel.classList.remove('open');
+    scrim.classList.remove('on');
+    scrim.hidden = true;
+    btn.setAttribute('aria-expanded', 'false');
+    document.body.classList.remove('navOpen');
+  };
+  wide.addEventListener('change', reset);
+})();
+</script>
+</body>
+</html>

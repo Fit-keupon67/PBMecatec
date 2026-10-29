@@ -132,6 +132,7 @@ dialog h2{font-size:1.3rem;margin-bottom:12px}
   <a class="navTile" href="index.html"><span class="ico" aria-hidden="true">🏠</span><span><b>Accueil</b><small>Présentation, prestations et contact</small></span></a>
   <a class="navTile" href="gallery.html"><span class="ico" aria-hidden="true">🖼️</span><span><b>Galerie photos</b><small>Réalisations, véhicules et projets</small></span></a>
   <a class="navTile" href="locations.html" aria-current="page"><span class="ico" aria-hidden="true">🧰</span><span><b>Locations</b><small>Outils de l'atelier à louer</small></span></a>
+  <a class="navTile" href="ventes.html"><span class="ico" aria-hidden="true">🏷️</span><span><b>Ventes</b><small>Outils et matériel à vendre</small></span></a>
   <a class="navTile" href="dons.html"><span class="ico" aria-hidden="true">🎁</span><span><b>Dons</b><small>J'accepte vos dons matériel</small></span></a>
 
   <p class="sideNav-foot">Mécanique · Soudure · Électronique</p>
@@ -162,6 +163,7 @@ dialog h2{font-size:1.3rem;margin-bottom:12px}
 
 <dialog id="zoom" aria-label="Photo agrandie"><img alt=""><p></p></dialog>
 
+<script src="donnees.js"></script>
 <script>
 /* ===== AJOUTER UN OUTIL À LOUER =====
    Tout se passe dans le dossier  locations/  :
@@ -224,12 +226,17 @@ function parseOutils(t) {
     dispo: !/^(non|no|0|faux|indispo|lou)/i.test(o.dispo || 'oui')
   }));
 }
+const CANDIDATS = ['locations/locations.txt', 'locations/outils.txt', 'locations/Outils.txt'];
 async function load() {
-  try {
-    const r = await fetch(OUTILS_FILE, { cache: 'no-cache' });
-    if (!r.ok) throw new Error('fichier introuvable (HTTP ' + r.status + ')');
-    tools = parseOutils(decode(await r.arrayBuffer()));
-  } catch (e) { emptyEl.textContent = "Impossible de lire " + OUTILS_FILE + " : " + e.message + "."; }
+  let txt = null, last = '';
+  for (const p of CANDIDATS) {
+    try { const r = await fetch(p, { cache: 'no-cache' }); if (r.ok) { txt = decode(await r.arrayBuffer()); break; } last = 'HTTP ' + r.status; }
+    catch (e) { last = 'lecture bloquée par le navigateur'; break; }
+  }
+  /* ouverture locale (double-clic) : lecture via donnees.js, généré par mettre-a-jour.ps1 */
+  if (txt === null && window.SITE_DATA && typeof SITE_DATA.locations === 'string') txt = SITE_DATA.locations;
+  if (txt !== null) tools = parseOutils(txt);
+  else { tools = []; emptyEl.textContent = 'Impossible de lire locations/locations.txt (' + last + '). Sur le site en ligne, vérifiez que le fichier est publié dans le dossier locations/. En local (double-clic), lancez d\'abord mettre-a-jour.ps1.'; }
   render();
 }
 
@@ -240,7 +247,7 @@ function render() {
     a.innerHTML = `<button class="ph" type="button" data-zoom="${i}" aria-label="Agrandir la photo : ${esc(o.nom)}">${o.photo ? `<img src="${esc(o.photo)}" alt="${esc(o.nom)}" loading="lazy" decoding="async" onerror="this.parentNode.insertAdjacentHTML('afterbegin','🧰');this.remove()">` : '🧰'}</button>
       <div class="bd"><h3>${esc(o.nom)}</h3>${o.desc ? `<p>${esc(o.desc)}</p>` : ''}
       <div class="ft">${o.dispo ? (o.prix ? `<span class="px">${esc(o.prix)}</span>` : '<span class="badge">Tarif sur demande</span>') : '<span class="badge">Actuellement indisponible</span>'}
-      <button class="btn main sm" type="button" data-ask="${i}" ${o.dispo ? '' : 'disabled'}>Demander</button></div></div>`;
+      <button class="btn main sm" type="button" data-ask="${i}" ${o.dispo ? '' : 'disabled'}>${o.dispo ? 'Demander' : 'Indisponible'}</button></div></div>`;
     grid.appendChild(a);
   });
 }

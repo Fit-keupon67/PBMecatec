@@ -79,6 +79,17 @@ body.navOpen{overflow:hidden}
 @media(max-width:900px){.logo-img{height:40px}nav{flex-wrap:wrap;height:auto;padding:8px 0 10px;row-gap:8px}.menuBtn{width:44px;height:44px;padding:0;justify-content:center}.menuBtn span{display:none}}
 .pageTitle{display:none;font-family:var(--head);font-weight:600;font-size:.9rem;color:var(--muted);letter-spacing:.02em}
 
+/* filtres de la galerie dans le menu */
+.navGroup{display:flex;flex-direction:column;gap:6px}
+.navTile .chev{margin-left:auto;flex:none;color:var(--muted);transition:transform .2s}
+.navTile[aria-expanded=false] .chev{transform:rotate(-90deg)}
+.subFilters{display:flex;flex-direction:column;gap:4px;margin:0 0 4px 22px;padding-left:10px;border-left:1px solid var(--line)}
+.subFilters[hidden]{display:none}
+.fbtn{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;text-align:left;font-family:var(--head);font-weight:600;font-size:.84rem;padding:7px 12px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--text);cursor:pointer;transition:border-color .2s,background .2s}
+.fbtn:hover{border-color:var(--lime)}
+.fbtn.on{background:var(--lime);color:#10140a;border-color:var(--lime)}
+.fbtn small{font-size:.72rem;opacity:.65}
+
 /* rail fixe (ordinateur) */
 @media(min-width:1100px){
   .sideNav{transform:none;visibility:visible;width:236px;box-shadow:none}
@@ -118,8 +129,12 @@ body.navOpen{overflow:hidden}
   <div class="sideNav-body">
     <p class="sideNav-title">Pages du site</p>
   <a class="navTile" href="index.html"><span class="ico" aria-hidden="true">🏠</span><span><b>Accueil</b><small>Présentation, prestations et contact</small></span></a>
-  <a class="navTile" href="gallery.html" aria-current="page"><span class="ico" aria-hidden="true">🖼️</span><span><b>Galerie photos</b><small>Réalisations, véhicules et projets</small></span></a>
+  <div class="navGroup">
+    <a class="navTile" id="galTile" href="gallery.html" aria-current="page" aria-expanded="true" aria-controls="galFilters"><span class="ico" aria-hidden="true">🖼️</span><span><b>Galerie photos</b><small>Réalisations, véhicules et projets</small></span><span class="chev" aria-hidden="true">▾</span></a>
+    <div class="subFilters" id="galFilters" role="tablist" aria-label="Filtres de la galerie"></div>
+  </div>
   <a class="navTile" href="locations.html"><span class="ico" aria-hidden="true">🧰</span><span><b>Locations</b><small>Outils de l'atelier à louer</small></span></a>
+  <a class="navTile" href="ventes.html"><span class="ico" aria-hidden="true">🏷️</span><span><b>Ventes</b><small>Outils et matériel à vendre</small></span></a>
   <a class="navTile" href="dons.html"><span class="ico" aria-hidden="true">🎁</span><span><b>Dons</b><small>J'accepte vos dons matériel</small></span></a>
 
   <p class="sideNav-foot">Mécanique · Soudure · Électronique</p>
@@ -129,7 +144,6 @@ body.navOpen{overflow:hidden}
 <main class="wrap">
   <h1>Galerie photos</h1>
   <p class="sub">Mes réalisations, mes véhicules et mes projets en cours.</p>
-  <div class="filters" id="filters" role="tablist"></div>
   <p id="empty" class="empty" hidden>Photos de cette catégorie bientôt disponibles.</p>
   <div class="masonry" id="grid"></div>
 </main>
@@ -140,66 +154,63 @@ body.navOpen{overflow:hidden}
   <img alt=""><button id="nx" aria-label="Suivante">›</button><p></p>
 </div>
 
+<script src="donnees.js"></script>
 <script>
 
-/* ===== AJOUTER UNE PHOTO =====
-   Les dossiers galerie/<catégorie>/ font foi : une photo apparaît dans un onglet si (et seulement si) elle est dans ce dossier.
-   Méthode simple : déposez la photo dans galerie/<catégorie>/ (elle apparaît toute seule, voir plus bas).
-   Cette liste ne sert qu'à donner un joli titre / un cadrage aux photos, et de secours si GitHub est injoignable.
-   Méthode manuelle : déposez-la dans galerie/<catégorie>/ puis ajoutez une ligne dans PHOTOS :
-   { src: "galerie/<catégorie>/photo.webp", titre, cat: ["soudure", ...] }
-   Les catégories possibles sont les "id" de TABS ci-dessous. */
-const TABS = [
-  { id: "tout",          label: "Tout" },
-  { id: "soudure",       label: "Soudure" },
-  { id: "conception",    label: "Conception" },
-  { id: "impression-3d", label: "Impression 3D" },
-  { id: "mecanique",     label: "Mécanique" },
-  { id: "electricite",   label: "Électricité" },
-  { id: "electronique",  label: "Réparation électronique" },
-  { id: "voiture",       label: "Prêt de voiture" },
-  { id: "applications",  label: "Applications" },
-];
+/* ===== AJOUTER / SUPPRIMER UNE PHOTO =====
+   Aucune photo n'est écrite dans ce fichier : tout vient de  galerie/photos.json.
+   1) déposez la photo dans  galerie/<catégorie>/  (ou supprimez-la)
+   2) lancez  mettre-a-jour.ps1  : il met à jour photos.json (et donnees.js pour l'ouverture locale)
+   Pour changer un titre ou mettre une photo dans un 2e onglet, modifiez photos.json (champ "cat" : liste de catégories). */
+const PHOTOS_JSON = 'galerie/photos.json';
+const LABELS = { soudure: 'Soudure', conception: 'Conception', 'impression-3d': 'Impression 3D', mecanique: 'Mécanique', electricite: 'Électricité', electronique: 'Réparation électronique', voiture: 'Prêt de voiture', applications: 'Applications' };
+const ORDER = Object.keys(LABELS);
 
-const PHOTOS = [
-  // full: true = photo en plein cadre (sans fond détouré)
-  { src: "galerie/soudure/drift-trike.webp", w: 1180, h: 672,        titre: "Drift trike thermique",       cat: ["soudure", "conception", "mecanique"] },
-  { src: "galerie/soudure/chopper-electrique.webp", w: 1032, h: 626, titre: "Chopper électrique",          cat: ["soudure", "conception", "electricite", "mecanique"] },
-  { src: "galerie/soudure/trio.webp", w: 1352, h: 575,               titre: "La gamme complète",           cat: ["soudure", "conception"] },
-  { src: "galerie/conception/conception-v5.webp", w: 1400, h: 742,      titre: "Conception 3D, version V5",   cat: ["conception"], full: true },
 
-  { src: "galerie/impression-3d/impression-3d-1.webp", w: 619, h: 628,    titre: "Impression 3D : aperçu de la pièce",            cat: ["impression-3d"], full: true },
-  { src: "galerie/impression-3d/impression-3d-2.webp", w: 753, h: 642,    titre: "Impression 3D : structure interne de la pièce", cat: ["impression-3d"], full: true },
-  { src: "galerie/mecanique/moto-modif.webp", w: 1368, h: 1237,         titre: "Modification moto, sans modification de châssis", cat: ["mecanique", "impression-3d"], full: true },
-
-  { src: "galerie/voiture/lotus.webp", w: 695, h: 268,              titre: "Lotus Elise",                 cat: ["voiture"] },
-  { src: "galerie/voiture/portrait.webp", w: 734, h: 860,           titre: "Shooting avec la Lotus",      cat: ["voiture"] },
-  { src: "galerie/voiture/voiture-avant.webp", w: 1600, h: 900,          titre: "Lotus Elise, vue avant",    cat: ["voiture"], full: true },
-  { src: "galerie/voiture/voiture-arriere.webp", w: 1600, h: 902,        titre: "Lotus Elise, vue arrière",  cat: ["voiture"], full: true },
-  { src: "galerie/voiture/voiture-roue.webp", w: 900, h: 1600,           titre: "Lotus Elise, détail jante", cat: ["voiture"], full: true },
-  { src: "galerie/voiture/voiture-arriere-detail.webp", w: 1600, h: 900, titre: "Lotus Elise, feux arrière", cat: ["voiture"], full: true },
-
-  { src: "galerie/electronique/electronique-condensateurs.webp", w: 1050, h: 1400, titre: "Inspection de condensateurs au microscope", cat: ["electronique"], full: true },
-  { src: "galerie/electronique/electronique-circuit.webp", w: 1050, h: 1400,       titre: "Inspection d'un circuit intégré sur carte", cat: ["electronique"], full: true },
-
-  { src: "galerie/applications/app-suivi-lames.webp", w: 902, h: 690,          titre: "Suivi des lames",                cat: ["applications"], full: true },
-  { src: "galerie/applications/app-gestion-outils-multi.webp", w: 1400, h: 752, titre: "Gestion des outils multi-machines", cat: ["applications"], full: true },
-  { src: "galerie/applications/app-graphique-outils.webp", w: 1400, h: 695,     titre: "Graphique des quantités et gestion des outils", cat: ["applications"] },
-];
-
-const grid = document.getElementById('grid'), filters = document.getElementById('filters'), empty = document.getElementById('empty');
-let visible = [], cur = 0;
+let TABS = [{ id: 'tout', label: 'Tout' }], PHOTOS = [];
+const grid = document.getElementById('grid'), filters = document.getElementById('galFilters'), empty = document.getElementById('empty');
+let visible = [], cur = 0, currentId = 'tout';
 const count = id => PHOTOS.filter(p => id === 'tout' || p.cat.includes(id)).length;
-
-let currentId = 'tout';
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const slug = c => String(c).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim().replace(/[\s_]+/g, '-');
+const toLabel = id => LABELS[id] || id.replace(/-/g, ' ').replace(/^./, c => c.toUpperCase());
+const dbg = { source: '', etat: 'ok', photos: 0 };
+
+function normalise(list) {
+  return list.map(p => typeof p === 'string' ? { src: p } : p).filter(p => p && (p.src || p.image || p.file || p.photo)).map(p => {
+    let src = String(p.src || p.image || p.file || p.photo).replace(/^\.?\//, '');
+    let cat = p.cat !== undefined ? p.cat : (p.categorie !== undefined ? p.categorie : p.category);
+    cat = (Array.isArray(cat) ? cat : (cat ? [cat] : [])).map(slug).filter(c => c && c !== 'tout');
+    if (!/^galerie\//i.test(src) && !/^https?:/i.test(src)) src = 'galerie/' + (cat[0] ? cat[0] + '/' : '') + src;
+    const t = src.split('/').pop().replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ').trim();
+    const e = { src: src.split('/').map(s => /^https?:$/.test(s) ? s : decodeURIComponent(s)).join('/'), titre: p.titre || p.title || (t.charAt(0).toUpperCase() + t.slice(1)), cat, full: p.full !== false && (p.full === true || !p.w) };
+    if (p.w && p.h) { e.w = p.w; e.h = p.h; }
+    return e;
+  });
+}
+
+async function loadPhotos() {
+  let data = null;
+  try {
+    const r = await fetch(PHOTOS_JSON + '?v=' + Date.now(), { cache: 'no-store' });
+    if (r.ok) { data = await r.json(); dbg.source = PHOTOS_JSON; } else dbg.etat = PHOTOS_JSON + ' : HTTP ' + r.status;
+  } catch (e) { dbg.etat = PHOTOS_JSON + ' illisible (' + e.message + ')'; }
+  /* ouverture locale (double-clic) : le navigateur bloque fetch, on lit donnees.js */
+  if (!data && window.SITE_DATA && SITE_DATA.photos) { data = SITE_DATA.photos; dbg.source = 'donnees.js (local)'; }
+  if (data && !Array.isArray(data) && Array.isArray(data.photos)) data = data.photos;
+  if (!Array.isArray(data)) throw new Error(dbg.etat);
+  PHOTOS = normalise(data); dbg.photos = PHOTOS.length;
+  const found = new Set(); PHOTOS.forEach(p => p.cat.forEach(c => found.add(c)));
+  const ids = [...ORDER.filter(i => found.has(i)), ...[...found].filter(i => !ORDER.includes(i)).sort()];
+  TABS = [{ id: 'tout', label: 'Tout' }, ...ids.map(id => ({ id, label: toLabel(id) }))];
+}
 
 function buildTabs() {
   filters.innerHTML = '';
   TABS.forEach(t => {
     const b = document.createElement('button');
-    b.className = 'btn'; b.dataset.id = t.id; b.innerHTML = `${t.label} <small>${count(t.id)}</small>`;
-    b.onclick = () => { show(t.id); history.replaceState(null, '', t.id === 'tout' ? location.pathname : '#' + t.id); };
+    b.className = 'fbtn'; b.type = 'button'; b.dataset.id = t.id; b.innerHTML = `<span>${esc(t.label)}</span><small>${count(t.id)}</small>`;
+    b.onclick = () => { show(t.id); history.replaceState(null, '', t.id === 'tout' ? location.pathname : '#' + t.id); if (!matchMedia('(min-width:1100px)').matches) document.getElementById('navClose').click(); };
     filters.appendChild(b);
   });
 }
@@ -207,83 +218,16 @@ function buildTabs() {
 function show(id) {
   if (!TABS.some(t => t.id === id)) id = 'tout';
   currentId = id;
-  filters.querySelectorAll('.btn').forEach(x => x.classList.toggle('on', x.dataset.id === id));
+  filters.querySelectorAll('.fbtn').forEach(x => x.classList.toggle('on', x.dataset.id === id));
   grid.innerHTML = ''; visible = PHOTOS.filter(p => id === 'tout' || p.cat.includes(id));
   empty.hidden = visible.length > 0;
   visible.forEach((p, i) => {
     const d = document.createElement('div'); d.className = 'item' + (p.full ? ' full' : ''); d.tabIndex = 0;
-    d.innerHTML = `<img src="${esc(p.src)}" alt="${esc(p.titre)}" ${p.w ? `width="${p.w}" height="${p.h}"` : 'style="min-height:160px"'} loading="lazy" decoding="async" onload="this.classList.add('ld');this.style.minHeight=0" onerror="this.closest('.item').remove()"><span>${esc(p.titre)}</span>`;
+    const src = p.src.split('/').map(encodeURIComponent).join('/');
+    d.innerHTML = `<img src="${esc(src)}" alt="${esc(p.titre)}" ${p.w ? `width="${p.w}" height="${p.h}"` : 'style="min-height:160px"'} loading="lazy" decoding="async" onload="this.classList.add('ld');this.style.minHeight=0" onerror="this.closest('.item').remove()"><span>${esc(p.titre)}</span>`;
     d.onclick = () => open(i); d.onkeydown = e => (e.key === 'Enter') && open(i);
     grid.appendChild(d);
   });
-  const on = filters.querySelector('.on'); on && on.scrollIntoView({ block: 'nearest', inline: 'center' });
-}
-
-/* ===== PHOTOS AJOUTÉES SANS CODE =====
-   Toute image déposée dans le dossier  galerie/<catégorie>/  du dépôt GitHub apparaît
-   automatiquement dans l'onglet correspondant (le nom du fichier devient le titre).
-   Catégories : soudure, conception, impression-3d, mecanique, electricite, electronique, voiture, applications
-   Une même photo déposée dans plusieurs dossiers apparaît dans plusieurs onglets.
-   REPO : à renseigner ("pseudo/nom-du-depot") seulement si le site n'est pas en xxx.github.io. */
-const REPO = "";
-const IMG_EXT = /\.(jpe?g|png|webp|gif|avif)$/i;
-function repoGuess() {
-  if (REPO) return REPO;
-  const h = location.hostname; if (!h.endsWith('.github.io')) return '';
-  const user = h.split('.')[0], part = location.pathname.split('/').filter(Boolean)[0];
-  return user + '/' + (part && !/\.html?$/i.test(part) ? part : user + '.github.io');
-}
-const DEBUG = /[?&]debug/.test(location.search);
-const dbg = { source: '', repo: '', etat: 'non lancé', liste: '', fichiers: 0, photos: [] };
-async function listManifest() {
-  try { const r = await fetch('galerie/index.json', { cache: 'no-store' }); if (!r.ok) { dbg.liste = 'index.json : HTTP ' + r.status; return []; } const a = await r.json(); dbg.liste = 'index.json : ' + a.length + ' images'; return a; }
-  catch (e) { dbg.liste = 'index.json illisible'; return []; }
-}
-async function listRepoFiles(repo) {
-  const key = 'galerie:' + repo, TTL = 60000;
-  try { const c = JSON.parse(sessionStorage.getItem(key) || 'null'); if (c && Date.now() - c.t < TTL) { dbg.etat = 'liste en cache'; return c.files; } } catch (e) {}
-  for (const ref of ['HEAD', 'main', 'master']) {
-    try {
-      const r = await fetch(`https://api.github.com/repos/${repo}/git/trees/${ref}?recursive=1`, { cache: 'no-store' });
-      dbg.etat = `GitHub (${ref}) : HTTP ${r.status}`;
-      if (!r.ok) continue;
-      const files = (await r.json()).tree.map(t => t.path);
-      try { sessionStorage.setItem(key, JSON.stringify({ t: Date.now(), files })); } catch (e) {}
-      return files;
-    } catch (e) { dbg.etat = 'erreur réseau : ' + e.message; }
-  }
-  return [];
-}
-async function loadFolderPhotos() {
-  const repo = repoGuess(); dbg.repo = repo || '(non détecté)';
-  const ids = TABS.map(t => t.id).filter(i => i !== 'tout');
-  const wait = ms => new Promise(r => setTimeout(() => r([]), ms));
-  const [man, api] = await Promise.all([Promise.race([listManifest(), wait(1500)]), repo ? Promise.race([listRepoFiles(repo), wait(1500)]) : []]);
-  /* liste fraîche de GitHub en priorité, sinon index.json */
-  const all = api.length ? api : man; dbg.fichiers = all.length; dbg.source = api.length ? 'API GitHub' : (man.length ? 'index.json' : 'aucune (liste intégrée)');
-  if (!all.length) return; /* aucune liste disponible : on garde la liste intégrée */
-
-  const nom = s => s.split('/').pop().toLowerCase();
-  const meta = new Map(PHOTOS.map(p => [nom(p.src), p]));
-  const byName = new Map();
-  all.forEach(path => {
-    const m = path.match(/^galerie\/([^/]+)\/([^/]+)$/);
-    if (!m || !ids.includes(m[1]) || !IMG_EXT.test(m[2])) return;
-    const key = m[2].toLowerCase();
-    let e = byName.get(key);
-    if (!e) {
-      const k = meta.get(key), t = m[2].replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ').trim();
-      e = { src: path.split('/').map(encodeURIComponent).join('/'), titre: k ? k.titre : t.charAt(0).toUpperCase() + t.slice(1), cat: [], full: k ? k.full : true };
-      if (k && k.w) { e.w = k.w; e.h = k.h; }
-      byName.set(key, e);
-    }
-    if (!e.cat.includes(m[1])) e.cat.push(m[1]);
-  });
-  /* les catégories viennent UNIQUEMENT des dossiers : une photo absente d'un dossier disparaît de son onglet */
-  const out = [];
-  PHOTOS.forEach(p => { const e = byName.get(nom(p.src)); if (e) { out.push(e); byName.delete(nom(p.src)); } });
-  byName.forEach(e => { out.push(e); dbg.photos.push(e.src); });
-  PHOTOS.length = 0; out.forEach(e => PHOTOS.push(e));
 }
 
 const lb = document.getElementById('lb'), lbi = lb.querySelector('img'), lbp = lb.querySelector('p');
@@ -299,13 +243,25 @@ lb.addEventListener('touchend', e => { const d = e.changedTouches[0].clientX - t
 addEventListener('keydown', e => { if (!lb.classList.contains('open')) return; if (e.key === 'Escape') close(); if (e.key === 'ArrowLeft') open(cur - 1); if (e.key === 'ArrowRight') open(cur + 1); });
 let ready = false;
 grid.innerHTML = '<p class="load">Chargement de la galerie…</p>';
-loadFolderPhotos().catch(e => { dbg.etat = 'erreur : ' + e.message; }).finally(() => {
-  ready = true; buildTabs(); show(location.hash.slice(1) || 'tout');
-  if (!DEBUG) return;
+loadPhotos().catch(e => {
+  dbg.etat = 'erreur : ' + e.message;
+  grid.innerHTML = '<p class="load">Impossible de lire galerie/photos.json (' + esc(e.message) + '). Vérifiez que le fichier est bien publié dans le dossier galerie/. Pour ouvrir le site en local (double-clic), lancez d\'abord mettre-a-jour.ps1.</p>';
+}).finally(() => {
+  ready = true; buildTabs(); if (PHOTOS.length) show(location.hash.slice(1) || 'tout');
+  if (!/[?&]debug/.test(location.search)) return;
   const d = document.createElement('pre'); d.style.cssText = 'margin:20px;padding:14px;border:1px dashed #c9f31d;border-radius:10px;white-space:pre-wrap;color:#f4f7f1;font-size:.8rem';
-  d.textContent = 'DIAGNOSTIC\nDépôt détecté : ' + dbg.repo + '\nListe de la galerie : ' + dbg.liste + '\nSource utilisée : ' + dbg.source + '\nAPI GitHub : ' + dbg.etat + '\nFichiers vus dans le dépôt : ' + dbg.fichiers + '\nPhotos ajoutées automatiquement : ' + (dbg.photos.join(', ') || 'aucune');
+  d.textContent = 'DIAGNOSTIC\nSource : ' + dbg.source + '\nÉtat : ' + dbg.etat + '\nPhotos : ' + dbg.photos + '\nOnglets : ' + TABS.map(t => t.id).join(', ');
   document.body.appendChild(d);
 });
+/* clic sur la tuile Galerie : affiche / masque les filtres (on reste sur la page) */
+(() => {
+  const tile = document.getElementById('galTile');
+  tile.addEventListener('click', e => {
+    e.preventDefault();
+    const open = tile.getAttribute('aria-expanded') !== 'true';
+    tile.setAttribute('aria-expanded', open); filters.hidden = !open;
+  });
+})();
 addEventListener('hashchange', () => ready && show(location.hash.slice(1) || 'tout'));
 </script>
 <script>

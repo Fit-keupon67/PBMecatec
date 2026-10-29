@@ -1,8 +1,9 @@
 # Fichier des articles à vendre (dossier ventes/, à côté des photos).
 # Un bloc par article, séparés par une ligne vide ou ---
 # Mettre "Disponible: non" quand l'article est vendu.
-Photo: exemple.jpg
-Titre: Bétonnière
-Prix: 100 €
-Description: Remplacez ce bloc par votre premier article à vendre.
-Disponible: non
+
+#Photo: exemple.jpg
+#Titre: Bétonnière
+#Prix: 100 €
+#Description: Remplacez ce bloc par votre premier article à vendre.
+#Disponible: non

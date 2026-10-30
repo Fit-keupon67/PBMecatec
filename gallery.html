@@ -81,13 +81,14 @@ body.navOpen{overflow:hidden}
 
 /* filtres de la galerie dans le menu */
 .navGroup{display:flex;flex-direction:column;gap:6px}
-.navTile .chev{margin-left:auto;flex:none;color:var(--muted);transition:transform .2s}
-.navTile[aria-expanded=false] .chev{transform:rotate(-90deg)}
-.subFilters{display:flex;flex-direction:column;gap:4px;margin:0 0 4px 22px;padding-left:10px;border-left:1px solid var(--line)}
+.navTile .chev{margin-left:auto;flex:none;color:var(--muted);transition:transform .25s}
+.navTile[aria-expanded=true]{border-color:var(--lime)}
+.navTile[aria-expanded=true] .chev{transform:rotate(180deg);color:var(--lime)}
+.subFilters{display:flex;flex-wrap:wrap;gap:7px;padding:0 2px 4px}
 .subFilters[hidden]{display:none}
-.fbtn{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;text-align:left;font-family:var(--head);font-weight:600;font-size:.84rem;padding:7px 12px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--text);cursor:pointer;transition:border-color .2s,background .2s}
-.fbtn:hover{border-color:var(--lime)}
-.fbtn.on{background:var(--lime);color:#10140a;border-color:var(--lime)}
+.fbtn{display:inline-flex;align-items:center;gap:7px;font:inherit;font-size:.82rem;padding:8px 13px;border-radius:999px;border:1px solid var(--line);background:var(--bg2);color:var(--text);cursor:pointer;transition:border-color .2s,background .2s}
+.fbtn:hover,.fbtn:focus-visible{border-color:var(--lime);background:rgba(201,243,29,.10)}
+.fbtn.on,.fbtn.on:hover{background:var(--lime);border-color:var(--lime);color:#10140a;font-weight:500}
 .fbtn small{font-size:.72rem;opacity:.65}
 
 /* rail fixe (ordinateur) */
@@ -130,7 +131,7 @@ body.navOpen{overflow:hidden}
     <p class="sideNav-title">Pages du site</p>
   <a class="navTile" href="index.html"><span class="ico" aria-hidden="true">🏠</span><span><b>Accueil</b><small>Présentation, prestations et contact</small></span></a>
   <div class="navGroup">
-    <a class="navTile" id="galTile" href="gallery.html" aria-current="page" aria-expanded="true" aria-controls="galFilters"><span class="ico" aria-hidden="true">🖼️</span><span><b>Galerie photos</b><small>Réalisations, véhicules et projets</small></span><span class="chev" aria-hidden="true">▾</span></a>
+    <a class="navTile" id="galTile" href="gallery.html" aria-current="page" aria-expanded="true" aria-controls="galFilters"><span class="ico" aria-hidden="true">🖼️</span><span><b>Galerie photos</b><small>Réalisations, véhicules et projets</small></span><svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></a>
     <div class="subFilters" id="galFilters" role="tablist" aria-label="Filtres de la galerie"></div>
   </div>
   <a class="navTile" href="locations.html"><span class="ico" aria-hidden="true">🧰</span><span><b>Locations</b><small>Outils de l'atelier à louer</small></span></a>

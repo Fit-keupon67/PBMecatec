@@ -235,6 +235,15 @@ input[type=checkbox]{width:auto;margin-top:3px;accent-color:var(--lime)}
 .navTile[aria-current=page]{border-color:var(--lime);background:rgba(201,243,29,.10)}
 .navTile[aria-current=page] b{color:var(--lime)}
 body.navOpen{overflow:hidden}
+.navTile.toggle{width:100%;font:inherit;text-align:left;cursor:pointer}
+.navTile .chev{margin-left:auto;flex:none;color:var(--muted);transition:transform .25s}
+.navTile[aria-expanded=true]{border-color:var(--lime)}
+.navTile[aria-expanded=true] .chev{transform:rotate(180deg);color:var(--lime)}
+.navFilters{display:flex;flex-wrap:wrap;gap:7px;padding:0 2px 4px}
+.navFilters[hidden]{display:none}
+.navFilters a{font-size:.82rem;padding:8px 13px;border-radius:999px;border:1px solid var(--line);background:var(--bg2);color:var(--text);transition:border-color .2s,background .2s}
+.navFilters a:hover,.navFilters a:focus-visible{border-color:var(--lime);background:rgba(201,243,29,.10)}
+.navFilters a.all{background:var(--lime);border-color:var(--lime);color:#10140a;font-weight:500}
 @media(max-width:900px){nav{flex-wrap:wrap;height:auto;padding:8px 0 10px;row-gap:8px}.menuBtn{width:44px;height:44px;padding:0;justify-content:center}.menuBtn span{display:none}}
 @media(max-width:1060px){nav ul{display:none}}
 .duo{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -294,7 +303,18 @@ body.navOpen{overflow:hidden}
   <div class="sideNav-body">
     <p class="sideNav-title">Pages du site</p>
   <a class="navTile" href="index.html" aria-current="page"><span class="ico" aria-hidden="true">🏠</span><span><b>Accueil</b><small>Présentation, prestations et contact</small></span></a>
-  <a class="navTile" href="gallery.html"><span class="ico" aria-hidden="true">🖼️</span><span><b>Galerie photos</b><small>Réalisations, véhicules et projets</small></span></a>
+  <button type="button" class="navTile toggle" id="galToggle" aria-expanded="false" aria-controls="galFilters"><span class="ico" aria-hidden="true">🖼️</span><span><b>Galerie photos</b><small>Réalisations, véhicules et projets</small></span><svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+  <div class="navFilters" id="galFilters" role="group" aria-label="Filtres de la galerie" hidden>
+    <a class="all" href="gallery.html">Tout voir</a>
+    <a href="gallery.html#soudure">Soudure</a>
+    <a href="gallery.html#conception">Conception</a>
+    <a href="gallery.html#impression-3d">Impression 3D</a>
+    <a href="gallery.html#mecanique">Mécanique</a>
+    <a href="gallery.html#electricite">Électricité</a>
+    <a href="gallery.html#electronique">Électronique</a>
+    <a href="gallery.html#voiture">Prêt de voiture</a>
+    <a href="gallery.html#applications">Applications</a>
+  </div>
   <a class="navTile" href="locations.html"><span class="ico" aria-hidden="true">🧰</span><span><b>Locations</b><small>Outils de l'atelier à louer</small></span></a>
   <a class="navTile" href="ventes.html"><span class="ico" aria-hidden="true">🏷️</span><span><b>Ventes</b><small>Outils et matériel à vendre</small></span></a>
   <a class="navTile" href="dons.html"><span class="ico" aria-hidden="true">🎁</span><span><b>Dons</b><small>J'accepte vos dons matériel</small></span></a>
@@ -648,6 +668,18 @@ io.observe(document.querySelector('.skills'));
     document.body.classList.remove('navOpen');
   };
   wide.addEventListener('change', reset);
+})();
+
+// Tuile « Galerie photos » : un clic déplie/replie les filtres, sans ouvrir la page
+(() => {
+  const t = document.getElementById('galToggle');
+  const f = document.getElementById('galFilters');
+  if (!t || !f) return;
+  t.addEventListener('click', () => {
+    const open = f.hidden;
+    f.hidden = !open;
+    t.setAttribute('aria-expanded', String(open));
+  });
 })();
 </script>
 </body>

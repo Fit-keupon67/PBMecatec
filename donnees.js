@@ -131,6 +131,22 @@ window.SITE_DATA = {
                                    "voiture"
                                ],
                        "full":  true
+                   },
+                   {
+                       "src":  "galerie/conception/rangement indus DAO.png",
+                       "titre":  "Rangement indus DAO",
+                       "cat":  [
+                                   "conception"
+                               ],
+                       "full":  true
+                   },
+                   {
+                       "src":  "galerie/conception/rangement indus réa.jpg",
+                       "titre":  "Rangement indus réa",
+                       "cat":  [
+                                   "conception"
+                               ],
+                       "full":  true
                    }
                ],
     "ventes":  "# Fichier des articles à vendre (dossier ventes/, à côté des photos).\n# Un bloc par article, séparés par une ligne vide ou ---\n# Mettre \"Disponible: non\" quand l\u0027article est vendu.\n\n#Photo: exemple.jpg\n#Titre: Bétonnière\n#Prix: 100 €\n#Description: Remplacez ce bloc par votre premier article à vendre.\n#Disponible: non",

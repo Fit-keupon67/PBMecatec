@@ -130,5 +130,21 @@
                     "voiture"
                 ],
         "full":  true
+    },
+    {
+        "src":  "galerie/conception/rangement indus DAO.png",
+        "titre":  "Rangement indus DAO",
+        "cat":  [
+                    "conception"
+                ],
+        "full":  true
+    },
+    {
+        "src":  "galerie/conception/rangement indus réa.jpg",
+        "titre":  "Rangement indus réa",
+        "cat":  [
+                    "conception"
+                ],
+        "full":  true
     }
 ]

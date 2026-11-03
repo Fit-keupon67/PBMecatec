@@ -109,6 +109,20 @@ dialog h2{font-size:1.3rem;margin-bottom:12px}
   .pageTitle{display:block}
   body.navOpen{overflow-x:hidden;overflow-y:auto}
 }
+
+/* ===== Téléphone : annonces compactes (photo à gauche, texte à droite) ===== */
+@media(max-width:600px){
+  h1{margin:18px 0 6px}.sub{font-size:.9rem;margin-bottom:14px}
+  .tools{grid-template-columns:1fr;gap:10px}
+  .tool{flex-direction:row;border-radius:14px}.tool:hover{transform:none}
+  .ph{width:104px;height:104px;aspect-ratio:auto;flex:none;align-self:flex-start;font-size:2rem}
+  .tool .bd{padding:10px 12px;gap:3px;min-width:0}
+  .tool h3{font-size:.98rem}
+  .tool p{font-size:.8rem;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+  .ft{padding-top:6px;flex-wrap:wrap;gap:6px}.px{font-size:.9rem}
+  .btn.sm{padding:6px 14px;font-size:.8rem}
+  .foot{padding:18px 0 20px}
+}
 </style>
 </head>
 <body>

@@ -335,6 +335,80 @@ html[data-wlv="print"] .v-print{display:block;width:min(340px,72vw);height:auto}
 .c-leg{stroke:#8d9aa6;stroke-width:3}
 .c-pulse{fill:#fff;filter:drop-shadow(0 0 7px #c9f31d) drop-shadow(0 0 14px #c9f31d)}
 </style>
+
+<style>
+/* ===== Version téléphone : mise en page compacte (le PC ne change pas) ===== */
+@media(max-width:900px){
+  section{padding:14px 0}
+  .sec-head{margin-bottom:10px}.sec-head p{display:none}
+  .chips{display:none}
+  .hero{padding:6px 20px 0;gap:10px}
+  .hero-pic{order:-1;flex-direction:row;justify-content:flex-start;align-items:center;gap:12px}
+  .frame{width:132px;flex:none}
+  .badge{width:auto;flex:1;font-size:.74rem}
+  .tag{margin-bottom:8px;font-size:.78rem}
+  h1{font-size:clamp(1.65rem,7vw,2.1rem)}
+  .hero p.lead{font-size:.95rem;margin:10px 0 14px}
+  .skills{padding:4px 14px}.skill{padding:6px 0}.skill span{font-size:.84rem}.stars{font-size:1rem;letter-spacing:2px}
+  .shots{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:10px;margin:0 -20px;padding:0 20px 6px;scrollbar-width:none}
+  .shots::-webkit-scrollbar{display:none}
+  .shot{flex:0 0 74%;height:140px;scroll-snap-align:center}
+  .shot:first-child{grid-column:auto}
+  .car{padding:10px 14px;gap:6px}.car img{max-height:86px}.car h3{font-size:1.05rem;margin-bottom:4px}.car p{font-size:.84rem;margin-bottom:8px}
+  .duo{gap:8px}.tile{padding:10px 14px}.tile p{display:none}
+  .box{padding:12px 14px}.info li{padding:5px 0}
+  textarea{min-height:56px}
+  footer{padding:12px 0 14px}
+}
+@media(max-width:520px){
+  .grid{grid-template-columns:1fr 1fr;gap:8px}
+  .card{padding:10px 11px}.card .go{display:none}
+  .ico{width:30px;height:30px;font-size:1rem;margin-bottom:5px}
+  .card h3{font-size:.88rem}
+  .card p{font-size:.72rem;line-height:1.35;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .steps{grid-template-columns:1fr 1fr;gap:8px}.steps li{padding:10px 11px}
+  .steps b{width:24px;height:24px;font-size:.8rem;margin-bottom:5px}.steps h3{font-size:.88rem}.steps p{font-size:.72rem}
+}
+
+/* ===== Assistant soudeur (rubrique « Une question ? ») ===== */
+.ask{display:grid;grid-template-columns:230px 1fr;gap:22px;align-items:end;max-width:860px;margin:0 auto}
+.welder{position:relative;display:block;width:100%;padding:0;border:0;background:none;color:inherit;cursor:pointer}
+.mascot{display:block;width:100%;height:auto;overflow:visible;filter:drop-shadow(0 10px 18px rgba(0,0,0,.45));transition:transform .3s}
+.welder:hover .mascot{transform:translateY(-4px) rotate(-1deg)}
+.mascot #visor{transform-box:view-box;transform-origin:130px 54px;transition:transform .5s cubic-bezier(.3,1.5,.5,1)}
+.ask.awake .mascot #visor{transform:rotate(-168deg)}
+.mascot .sp{opacity:0}
+.ask.awake .mascot .sp{animation:twinkle 1.1s infinite}
+.ask.awake .mascot .sp:nth-child(2){animation-delay:.35s}.ask.awake .mascot .sp:nth-child(3){animation-delay:.7s}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(.4)}50%{opacity:1;transform:scale(1.2)}}
+.talk{min-width:0;align-self:center}
+.bubble{position:relative;background:var(--bg2);border:1px solid var(--lime);border-radius:18px;padding:16px 20px;box-shadow:0 0 30px rgba(201,243,29,.14);animation:pulseB 2.6s infinite}
+.bubble::before{content:"";position:absolute;left:-9px;bottom:26px;width:16px;height:16px;background:var(--bg2);border-left:1px solid var(--lime);border-bottom:1px solid var(--lime);transform:rotate(45deg)}
+.bubble b{display:block;font-family:var(--head);font-size:1.15rem;margin-bottom:4px}
+.bubble span{color:var(--muted);font-size:.92rem}
+@keyframes pulseB{50%{box-shadow:0 0 38px rgba(201,243,29,.3)}}
+.chat{background:var(--bg2);border:1px solid var(--line);border-radius:18px;padding:12px;display:grid;gap:10px}
+.msgs{display:flex;flex-direction:column;gap:8px;max-height:280px;overflow-y:auto;padding:2px 4px 2px 2px}
+.m{max-width:88%;padding:9px 13px;border-radius:14px;font-size:.92rem;line-height:1.45;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.m.bot{align-self:flex-start;background:var(--bg);border:1px solid var(--line);border-bottom-left-radius:4px}
+.m.me{align-self:flex-end;background:var(--lime);color:#10140a;font-weight:400;border-bottom-right-radius:4px}
+.m.typing{flex-direction:row;gap:5px;padding:12px 14px}
+.m.typing i{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:dot 1s infinite}
+.m.typing i:nth-child(2){animation-delay:.15s}.m.typing i:nth-child(3){animation-delay:.3s}
+@keyframes dot{50%{transform:translateY(-4px);background:var(--lime)}}
+.sugg{display:flex;flex-wrap:wrap;gap:6px}
+.sugg button{font:inherit;font-size:.8rem;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:6px 12px;cursor:pointer;transition:border-color .2s,color .2s}
+.sugg button:hover{border-color:var(--lime);color:var(--lime)}
+.askrow{display:flex;gap:8px}.askrow input{flex:1;min-width:0}
+@media(max-width:700px){
+  .ask{grid-template-columns:1fr;justify-items:center;gap:10px}
+  .welder{width:132px}
+  .talk{width:100%}
+  .bubble{padding:12px 14px}.bubble::before{left:50%;top:-9px;bottom:auto;margin-left:-8px;border-left:1px solid var(--lime);border-top:1px solid var(--lime);border-bottom:0;transform:rotate(45deg)}
+  .bubble b{font-size:1.02rem}.bubble span{font-size:.85rem}
+  .msgs{max-height:230px}.m{max-width:94%}
+}
+</style>
 </head>
 <body>
 <div id="weldLoader" role="status" aria-live="polite" aria-label="Chargement du site">
@@ -581,13 +655,61 @@ html[data-wlv="print"] .v-print{display:block;width:min(340px,72vw);height:auto}
 
   <section id="faq">
     <div class="wrap">
-      <div class="sec-head"><h2>Questions fréquentes</h2></div>
-      <div class="faq">
-        <details><summary>Le devis est-il vraiment gratuit ?</summary><p>Oui, le devis est gratuit et sans engagement.</p></details>
-        <details><summary>Où intervenez-vous ?</summary><p>Dans le Bas-Rhin (67) et les environs. Pour une pièce à fabriquer ou une carte à réparer, un envoi ou un dépôt est possible.</p></details>
-        <details><summary>Quelles informations dois-je donner pour un devis ?</summary><p>Décrivez le besoin, ajoutez des photos ou un plan si vous en avez, et indiquez le délai souhaité.</p></details>
-        <details><summary>Comment réserver la Lotus pour un shooting ?</summary><p>Utilisez le formulaire en choisissant « Prêt de voiture (shooting) », avec la date et le lieu envisagés.</p></details>
+      <div class="sec-head"><h2>Une question ?</h2><p>Demandez à l'assistant de l'atelier.</p></div>
+      <div class="ask" id="ask">
+        <button type="button" class="welder" id="welderBtn" aria-expanded="false" aria-controls="chat" aria-label="Poser une question à l'assistant soudeur">
+        <svg class="mascot" viewBox="0 0 260 270" aria-hidden="true">
+          <defs><linearGradient id="skin" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f0b98d"/><stop offset="1" stop-color="#d28f62"/></linearGradient></defs>
+          <ellipse cx="130" cy="262" rx="96" ry="7" fill="#000" opacity=".28"/>
+          <!-- torse -->
+          <path d="M38 158C38 122 78 108 130 108s92 14 92 50l-14 100H52Z" fill="url(#skin)"/>
+          <path d="M130 118v52" stroke="#b97a52" stroke-width="2" opacity=".55"/>
+          <path d="M82 150q26 24 48 10q22 14 48-10" fill="none" stroke="#b97a52" stroke-width="2.5" opacity=".6"/>
+          <!-- tablier cuir -->
+          <path d="M108 112l-14 62M152 112l14 62" stroke="#6e4620" stroke-width="5" stroke-linecap="round"/>
+          <path d="M90 172h80l18 88H72Z" fill="#8a5a2b"/>
+          <path d="M98 182h64l12 70H86Z" fill="none" stroke="#c99a5b" stroke-width="1.5" stroke-dasharray="4 3" opacity=".8"/>
+          <rect x="106" y="212" width="48" height="24" rx="4" fill="#7a4f25" stroke="#c99a5b" stroke-width="1.2"/>
+          <!-- bras (double biceps) -->
+          <g stroke-linecap="round" fill="none">
+            <path d="M66 140L34 164" stroke="#d99b6c" stroke-width="32"/><path d="M34 164L40 108" stroke="#d99b6c" stroke-width="28"/>
+            <path d="M194 140L226 164" stroke="#d99b6c" stroke-width="32"/><path d="M226 164L220 108" stroke="#d99b6c" stroke-width="28"/>
+          </g>
+          <ellipse cx="50" cy="150" rx="21" ry="17" fill="#eab182"/><ellipse cx="210" cy="150" rx="21" ry="17" fill="#eab182"/>
+          <path d="M42 146q8-6 16 0M202 146q8-6 16 0" stroke="#b97a52" stroke-width="2" fill="none" opacity=".6"/>
+          <circle cx="40" cy="92" r="17" fill="#8a5a2b"/><rect x="26" y="104" width="28" height="9" rx="3" fill="#c9f31d"/>
+          <circle cx="220" cy="92" r="17" fill="#8a5a2b"/><rect x="206" y="104" width="28" height="9" rx="3" fill="#c9f31d"/>
+          <g fill="#ffb020"><circle class="sp" cx="246" cy="70" r="3"/><circle class="sp" cx="238" cy="56" r="2.4"/><circle class="sp" cx="252" cy="52" r="2"/></g>
+          <!-- tête -->
+          <rect x="114" y="92" width="32" height="24" rx="6" fill="#c9875a"/>
+          <ellipse cx="103" cy="68" rx="5" ry="8" fill="#d28f62"/><ellipse cx="157" cy="68" rx="5" ry="8" fill="#d28f62"/>
+          <ellipse cx="130" cy="66" rx="28" ry="31" fill="url(#skin)"/>
+          <path d="M113 57l13 3M147 57l-13 3" stroke="#3a2a1e" stroke-width="4" stroke-linecap="round"/>
+          <circle cx="120" cy="66" r="3.2" fill="#1b242d"/><circle cx="140" cy="66" r="3.2" fill="#1b242d"/>
+          <path d="M130 68q-5 9 2 10" stroke="#b97a52" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M103 72C104 102 156 102 157 72C151 86 109 86 103 72Z" fill="#3a2a1e"/>
+          <path d="M117 83q13 12 26 0Z" fill="#fff"/>
+          <!-- casque + visière -->
+          <path d="M98 60C96 12 164 12 162 60Q130 48 98 60Z" fill="#3b4652" stroke="#55636f" stroke-width="2"/>
+          <path d="M106 38Q130 24 154 38" stroke="#c9f31d" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <g id="visor"><path d="M98 54H162V86Q162 92 154 92H106Q98 92 98 86Z" fill="#232e3a" stroke="#55636f" stroke-width="2"/>
+            <rect x="106" y="62" width="48" height="12" rx="3" fill="#0c1116"/><path d="M112 66h16" stroke="#c9f31d" stroke-width="2" opacity=".7" stroke-linecap="round"/></g>
+        </svg>
+        </button>
+        <div class="talk">
+          <div class="bubble" id="teaser"><b>Une question ? Clique sur moi !</b><span>Devis, zone d'intervention, location, Lotus… je réponds tout de suite.</span></div>
+          <div class="chat" id="chat" hidden>
+            <div class="msgs" id="msgs" aria-live="polite"></div>
+            <div class="sugg" id="sugg"></div>
+            <form class="askrow" id="askForm"><input id="askIn" placeholder="Écrivez votre question…" maxlength="200" aria-label="Votre question" autocomplete="off"><button class="btn main sm" type="submit">Envoyer</button></form>
+          </div>
+        </div>
       </div>
+      <noscript><div class="faq">
+        <details open><summary>Le devis est-il gratuit ?</summary><p>Oui, le devis est gratuit et sans engagement.</p></details>
+        <details open><summary>Où intervenez-vous ?</summary><p>Dans le Bas-Rhin (67) et les environs.</p></details>
+        <details open><summary>Comment me contacter ?</summary><p>Par e-mail : PBMecatec@hotmail.com</p></details>
+      </div></noscript>
     </div>
   </section>
 
@@ -896,6 +1018,63 @@ io.observe(document.querySelector('.skills'));
   }
   requestAnimationFrame(frame);
   setTimeout(end,6000);
+})();
+</script>
+<script>
+/* Assistant soudeur : répond aux questions fréquentes.
+   Pour modifier une réponse : changez le texte entre guillemets dans la liste KB ci-dessous. */
+(() => {
+  const ask = document.getElementById('ask'); if (!ask) return;
+  const btn = document.getElementById('welderBtn'), chat = document.getElementById('chat'), teaser = document.getElementById('teaser');
+  const msgs = document.getElementById('msgs'), sugg = document.getElementById('sugg'), form = document.getElementById('askForm'), inp = document.getElementById('askIn');
+  const IA_URL = ""; /* option : adresse d'un service IA (voir explications) ; vide = réponses intégrées ci-dessous */
+  const KB = [
+    { k: ['devis', 'gratuit', 'tarif', 'prix', 'combien', 'cout'], a: "Oui, le devis est gratuit et sans engagement. Le prix et le délai sont annoncés avant de commencer le travail.", l: [{ t: 'Demander un devis', h: '#contact' }] },
+    { k: ['interven', 'zone', 'deplac', 'habite', 'situe', 'region', 'bas-rhin', 'bas rhin', 'alsace', 'envoi', 'depot'], a: "J'interviens dans le Bas-Rhin (67) et les environs. Pour une pièce à fabriquer ou une carte électronique à réparer, un envoi ou un dépôt est possible.", l: [] },
+    { k: ['information', 'infos', 'preparer', 'fournir', 'donner pour', 'photos pour'], a: "Décrivez le besoin, ajoutez des photos ou un plan si vous en avez, et indiquez le délai souhaité. Plus c'est précis, plus le devis est rapide.", l: [{ t: 'Écrire à Pascal', h: '#contact' }] },
+    { k: ['lotus', 'voiture', 'shooting', 'elise', 'clip', 'seance'], a: "La Lotus Elise jaune est disponible sur réservation pour vos shootings photo. Utilisez le formulaire en choisissant « Prêt de voiture (shooting) », avec la date et le lieu envisagés.", l: [{ t: 'Réserver', h: '#contact' }, { t: 'Photos de la voiture', h: 'gallery.html#voiture' }] },
+    { k: ['prestation', 'service', 'propose', 'competence', 'metier'], a: "Soudure, conception, impression 3D, mécanique, électricité, réparation de cartes électroniques, prêt de voiture pour shootings photo, et applications de gestion d'entreprise sur mesure.", l: [{ t: 'Voir les prestations', h: '#prestations' }] },
+    { k: ['soud', 'acier', 'chassis', 'mig', 'tig'], a: "Soudure à l'arc, MIG et TIG : châssis, supports, réparations et pièces sur mesure en acier. Pour un autre matériau, décrivez-moi votre projet par le formulaire.", l: [{ t: 'Photos soudure', h: 'gallery.html#soudure' }] },
+    { k: ['3d', 'imprim', 'prototype'], a: "Impression 3D de prototypes et de pièces techniques, à l'unité ou en petite série.", l: [{ t: 'Photos impression 3D', h: 'gallery.html#impression-3d' }] },
+    { k: ['electroni', 'carte', 'panne', 'condensateur', 'circuit'], a: "Recherche de panne et remise en état de cartes électroniques. Un envoi ou un dépôt est possible.", l: [{ t: 'Photos électronique', h: 'gallery.html#electronique' }] },
+    { k: ['mecanique', 'moto', 'moteur', 'entretien', 'diagnostic', 'electricite', 'cablage'], a: "Entretien, diagnostic et réparation en mécanique, thermique comme électrique, ainsi que câblage, installation et motorisation électrique.", l: [{ t: 'Photos mécanique', h: 'gallery.html#mecanique' }] },
+    { k: ['application', 'logiciel', 'gestion', 'stock', 'powershell', 'tableau de bord'], a: "Je crée des outils de gestion d'entreprise sur mesure : suivi de stocks, suivi d'outils, tableaux de bord et graphiques.", l: [{ t: 'Voir les applications', h: 'gallery.html#applications' }] },
+    { k: ['louer', 'location', 'loue'], a: "Des outils de l'atelier sont à louer. Choisissez celui qui vous intéresse sur la page Locations et envoyez une demande : je confirme la disponibilité, le tarif et les conditions par e-mail.", l: [{ t: 'Page Locations', h: 'locations.html' }] },
+    { k: ['vend', 'achet', 'vente', 'occasion'], a: "Du matériel d'occasion de l'atelier est parfois à vendre, avec photo et prix.", l: [{ t: 'Page Ventes', h: 'ventes.html' }] },
+    { k: [' don ', ' dons ', 'donner', 'donne ', 'debarras', 'plus servir'], a: "Vous avez un objet dont vous ne vous servez plus ? Envoyez-moi une photo avec une courte description. Même en panne, il peut m'intéresser, mais je n'accepte pas forcément tout : je réponds après avoir vu la photo.", l: [{ t: 'Page Dons', h: 'dons.html' }] },
+    { k: ['contact', 'joindre', 'mail', 'ecrire', 'telephone', 'appel', 'instagram', 'reseau'], a: "Le plus simple : le formulaire de contact ou l'e-mail PBMecatec@hotmail.com. Vous pouvez aussi me suivre sur Instagram : @littlekeupon.", l: [{ t: 'Formulaire', h: '#contact' }] },
+    { k: ['galerie', 'photo', 'realisation', 'creation', 'trike', 'chopper'], a: "Toutes mes réalisations sont dans la galerie, classées par prestation : trikes, choppers, pièces soudées, impression 3D, électronique…", l: [{ t: 'Ouvrir la galerie', h: 'gallery.html' }] },
+    { k: ['qui es', 'qui est', 'pascal', 'presente'], a: "Pascal Bernier : mécanique, soudure, électronique, impression 3D et création d'applications. Je suis son assistant virtuel : un programme, pas Pascal en personne.", l: [] }
+  ];
+  const FALLBACK = { a: "Là, je sèche. Écrivez votre question à Pascal : il vous répond rapidement.", l: [{ t: 'Écrire à Pascal', h: '#contact' }] };
+  const SUGG = ['Le devis est-il gratuit ?', 'Où intervenez-vous ?', 'Quelles prestations ?', 'Réserver la Lotus', 'Louer un outil', 'Faire un don'];
+
+  const norm = s => ' ' + s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9' -]+/g, ' ').replace(/\s+/g, ' ') + ' ';
+  const find = q => { const t = norm(q); let best = null, sc = 0; KB.forEach(e => { let s = 0; e.k.forEach(w => { if (t.includes(w)) s += w.length > 4 ? 2 : 1; }); if (s > sc) { sc = s; best = e; } }); return best; };
+
+  function add(cls, text, links) {
+    const d = document.createElement('div'); d.className = 'm ' + cls;
+    if (cls === 'typing') d.innerHTML = '<i></i><i></i><i></i>';
+    else { const p = document.createElement('p'); p.textContent = text; d.appendChild(p); }
+    (links || []).forEach(l => { const a = document.createElement('a'); a.className = 'btn sm'; a.href = l.h; a.textContent = l.t; d.appendChild(a); });
+    msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight; return d;
+  }
+  async function repondre(q) {
+    add('me', q); const t = add('typing');
+    let r = null;
+    if (IA_URL) { try { const x = await fetch(IA_URL, { method: 'POST', body: JSON.stringify({ type: 'ia', question: q }) }); const j = await x.json(); if (j && j.reponse) r = { a: String(j.reponse), l: [] }; } catch (e) {} }
+    if (!r) r = find(q) || FALLBACK;
+    await new Promise(ok => setTimeout(ok, 500));
+    t.remove(); add('bot', r.a, r.l);
+  }
+  SUGG.forEach(q => { const b = document.createElement('button'); b.type = 'button'; b.textContent = q; b.onclick = () => repondre(q); sugg.appendChild(b); });
+  form.addEventListener('submit', e => { e.preventDefault(); const q = inp.value.trim(); if (!q) return; inp.value = ''; repondre(q); });
+
+  btn.addEventListener('click', () => {
+    const open = chat.hidden;
+    chat.hidden = !open; teaser.hidden = open; ask.classList.toggle('awake', open); btn.setAttribute('aria-expanded', String(open));
+    if (open && !msgs.children.length) add('bot', "Salut ! Je suis l'assistant virtuel de l'atelier : un programme, pas Pascal en personne. Posez-moi votre question ou choisissez un sujet.");
+  });
 })();
 </script>
 </body>

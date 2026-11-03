@@ -2,8 +2,8 @@
 # Un bloc par article, séparés par une ligne vide ou ---
 # Mettre "Disponible: non" quand l'article est vendu.
 
-#Photo: exemple.jpg
-#Titre: Bétonnière
-#Prix: 100 €
-#Description: Remplacez ce bloc par votre premier article à vendre.
-#Disponible: non
+Photo: Arbre à chat bois naturel 1.png
+Titre: Arbre à chat en bois fait main.
+Prix: 200 €
+Description: Possibilité d'ajout de plateaux (30€ par plateau supplémentaire). Les roues et le chats ne sont pas fournis avec.
+Disponible: oui

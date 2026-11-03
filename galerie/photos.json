@@ -146,5 +146,13 @@
                     "conception"
                 ],
         "full":  true
+    },
+    {
+        "src":  "galerie/mecanique/Changement charbon démarreur.png",
+        "titre":  "Changement charbon démarreur",
+        "cat":  [
+                    "mecanique"
+                ],
+        "full":  true
     }
 ]

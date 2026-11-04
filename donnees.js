@@ -163,6 +163,14 @@ window.SITE_DATA = {
         "vrac"
       ],
       "full": true
+    },
+    {
+      "src": "galerie/Vrac/minecraft-1-18-couche-minerai.jpg",
+      "titre": "Minecraft 1 18 couche minerai",
+      "cat": [
+        "vrac"
+      ],
+      "full": true
     }
   ],
   "ventes": "# Fichier des articles à vendre (dossier ventes/, à côté des photos).\n# Un bloc par article, séparés par une ligne vide ou ---\n# Mettre \"Disponible: non\" quand l'article est vendu.\n\nPhoto: Arbre à chat bois naturel 1.png\nTitre: Arbre à chat en bois fait main.\nPrix: 200 €\nDescription: Possibilité d'ajout de plateaux (30€ par plateau supplémentaire). Les roues et le chat ne sont pas fournis avec.\nDisponible: oui\n",

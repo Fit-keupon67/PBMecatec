@@ -176,7 +176,8 @@ dialog h2{font-size:1.3rem;margin-bottom:12px}
           Prix: 120 €
           Description: Très bon état, vendue avec ses mors.
           Disponible: oui   (mettre "non" quand c'est vendu)
-   Rien à modifier dans ce fichier HTML. Ces photos n'apparaissent jamais dans la galerie. */
+   Rien à modifier dans ce fichier HTML, et aucune mise à jour manuelle : le site lit
+   ventes/ventes.txt directement. Ces photos n'apparaissent jamais dans la galerie. */
 const OUTILS_FILE = "ventes/ventes.txt";
 
 // ===== SERVICE D'ENVOI : même adresse que sur index.html (à changer aux deux endroits si elle change) =====
@@ -238,7 +239,7 @@ async function load() {
   /* ouverture locale (double-clic) : lecture via donnees.js, généré par mettre-a-jour.ps1 */
   if (txt === null && window.SITE_DATA && typeof SITE_DATA.ventes === 'string') txt = SITE_DATA.ventes;
   if (txt !== null) tools = parseOutils(txt);
-  else { tools = []; emptyEl.textContent = 'Impossible de lire ventes/ventes.txt (' + last + '). Sur le site en ligne, vérifiez que le fichier est publié dans le dossier ventes/. En local (double-clic), lancez d\'abord mettre-a-jour.ps1.'; }
+  else { tools = []; emptyEl.textContent = 'Impossible de lire ventes/ventes.txt (' + last + '). Sur le site en ligne, vérifiez que le fichier est publié dans le dossier ventes/. En local (double-clic), lancez mettre-a-jour.ps1 ou node outils/maj-donnees.js.'; }
   render();
 }
 

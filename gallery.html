@@ -160,9 +160,11 @@ body.navOpen{overflow:hidden}
 
 /* ===== AJOUTER / SUPPRIMER UNE PHOTO =====
    Aucune photo n'est écrite dans ce fichier : tout vient de  galerie/photos.json.
-   1) déposez la photo dans  galerie/<catégorie>/  (ou supprimez-la)
-   2) lancez  mettre-a-jour.ps1  : il met à jour photos.json (et donnees.js pour l'ouverture locale)
-   Pour changer un titre ou mettre une photo dans un 2e onglet, modifiez photos.json (champ "cat" : liste de catégories). */
+   1) déposez la photo dans  galerie/<catégorie>/  (ou supprimez-la), puis publiez le changement.
+   2) c'est tout : GitHub Actions relance  outils/maj-donnees.js  et met à jour photos.json.
+   (En local, lancez  mettre-a-jour.ps1  ou  node outils/maj-donnees.js.)
+   Pour changer un titre ou mettre une photo dans un 2e onglet, modifiez photos.json (champ "cat" : liste de catégories).
+   Si photos.json n'existe pas encore, la page reconstruit la liste toute seule via l'API GitHub. */
 const PHOTOS_JSON = 'galerie/photos.json';
 const LABELS = { soudure: 'Soudure', conception: 'Conception', 'impression-3d': 'Impression 3D', mecanique: 'Mécanique', electricite: 'Électricité', electronique: 'Réparation électronique', voiture: 'Prêt de voiture', applications: 'Applications' };
 const ORDER = Object.keys(LABELS);
@@ -190,6 +192,49 @@ function normalise(list) {
   });
 }
 
+/* ===== Repli automatique : lister les dossiers/photos via l'API GitHub =====
+   Utile si photos.json n'a pas encore été régénéré (première publication,
+   Action en cours…). Ne fonctionne que sur les Pages GitHub publiques.
+   Le résultat est gardé 30 min dans le navigateur pour éviter le quota API. */
+function githubRepo() {
+  const h = location.hostname;
+  if (!/\.github\.io$/i.test(h)) return null;
+  const owner = h.split('.')[0];
+  const seg = location.pathname.split('/').filter(Boolean);
+  return { owner, repo: seg.length ? seg[0] : owner + '.github.io' };
+}
+
+async function photosFromGitHub() {
+  const rp = githubRepo();
+  if (!rp) return null;
+  const cacheKey = 'pbm_photos_' + rp.owner + '_' + rp.repo;
+  try {
+    const c = JSON.parse(localStorage.getItem(cacheKey) || 'null');
+    if (c && Array.isArray(c.data) && Date.now() - c.at < 30 * 60 * 1000) return c.data;
+  } catch (e) {}
+  const headers = { Accept: 'application/vnd.github+json' };
+  const api = `https://api.github.com/repos/${rp.owner}/${rp.repo}/contents/galerie`;
+  const r = await fetch(api, { headers });
+  if (!r.ok) throw new Error('GitHub API ' + r.status);
+  const dossiers = (await r.json()).filter(d => d.type === 'dir' && !['profil', 'logo'].includes(slug(d.name)));
+  const parNom = new Map();
+  await Promise.all(dossiers.map(async d => {
+    const rr = await fetch(d.url, { headers });
+    if (!rr.ok) return;
+    const fichiers = await rr.json();
+    const cat = slug(d.name);
+    fichiers.filter(f => f.type === 'file' && /\.(jpe?g|png|webp|gif|avif)$/i.test(f.name)).forEach(f => {
+      const key = f.name.toLowerCase();
+      if (!parNom.has(key)) parNom.set(key, { src: `galerie/${d.name}/${f.name}`, cat: [], full: true });
+      const e = parNom.get(key);
+      if (!e.cat.includes(cat)) e.cat.push(cat);
+    });
+  }));
+  const liste = [...parNom.values()];
+  try { localStorage.setItem(cacheKey, JSON.stringify({ at: Date.now(), data: liste })); } catch (e) {}
+  return liste;
+}
+
 async function loadPhotos() {
   let data = null;
   try {
@@ -199,6 +244,13 @@ async function loadPhotos() {
   /* ouverture locale (double-clic) : le navigateur bloque fetch, on lit donnees.js */
   if (!data && window.SITE_DATA && SITE_DATA.photos) { data = SITE_DATA.photos; dbg.source = 'donnees.js (local)'; }
   if (data && !Array.isArray(data) && Array.isArray(data.photos)) data = data.photos;
+  /* dernier recours : liste directe des dossiers via GitHub (aucune mise à jour manuelle) */
+  if (!Array.isArray(data) || data.length === 0) {
+    try {
+      const gh = await photosFromGitHub();
+      if (gh && gh.length) { data = gh; dbg.source = 'API GitHub'; dbg.etat = 'ok'; }
+    } catch (e) { dbg.etat += ' / repli GitHub : ' + e.message; }
+  }
   if (!Array.isArray(data)) throw new Error(dbg.etat);
   PHOTOS = normalise(data); dbg.photos = PHOTOS.length;
   const found = new Set(); PHOTOS.forEach(p => p.cat.forEach(c => found.add(c)));
@@ -246,7 +298,7 @@ let ready = false;
 grid.innerHTML = '<p class="load">Chargement de la galerie…</p>';
 loadPhotos().catch(e => {
   dbg.etat = 'erreur : ' + e.message;
-  grid.innerHTML = '<p class="load">Impossible de lire galerie/photos.json (' + esc(e.message) + '). Vérifiez que le fichier est bien publié dans le dossier galerie/. Pour ouvrir le site en local (double-clic), lancez d\'abord mettre-a-jour.ps1.</p>';
+  grid.innerHTML = '<p class="load">Impossible de lire galerie/photos.json (' + esc(e.message) + '). Vérifiez que le dossier galerie/ est bien publié. En ligne, la liste se reconstruit normalement toute seule (Action GitHub). En local (double-clic), lancez mettre-a-jour.ps1 ou node outils/maj-donnees.js.</p>';
 }).finally(() => {
   ready = true; buildTabs(); if (PHOTOS.length) show(location.hash.slice(1) || 'tout');
   if (!/[?&]debug/.test(location.search)) return;

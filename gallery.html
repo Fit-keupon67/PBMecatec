@@ -110,6 +110,27 @@ body.navOpen{overflow:hidden}
   body.navOpen{overflow-x:hidden;overflow-y:auto}
 }
 </style>
+<style>
+/* ===== Adaptation affichage : téléphone ===== */
+html.is-phone .wrap{padding:0 16px}
+html.is-phone section{padding:18px 0}
+html.is-phone .hero{padding:14px 16px 20px;gap:14px}
+html.is-phone h1{font-size:clamp(1.6rem,8.2vw,2.5rem)}
+html.is-phone .hero .lead{font-size:1rem}
+html.is-phone .frame{width:min(100%,250px)}
+html.is-phone .badge{width:min(100%,250px)}
+html.is-phone .grid{grid-template-columns:repeat(2,1fr)}
+html.is-phone .card{padding:11px 12px}
+html.is-phone .skills{grid-template-columns:1fr}
+html.is-phone .shots{grid-template-columns:1fr;grid-template-rows:auto;gap:10px}
+html.is-phone .shot{height:auto;aspect-ratio:4/3}
+html.is-phone .duo{grid-template-columns:1fr}
+html.is-phone .steps{grid-template-columns:1fr}
+html.is-phone .contact .row{grid-template-columns:1fr}
+html.is-phone .cta{flex-direction:column;align-items:stretch}
+html.is-phone .chips{margin-top:12px}
+html.is-phone .tag{font-size:.8rem}
+</style>
 </head>
 <body>
 <header><div class="wrap"><nav>
@@ -358,6 +379,16 @@ addEventListener('hashchange', () => ready && show(location.hash.slice(1) || 'to
     document.body.classList.remove('navOpen');
   };
   wide.addEventListener('change', reset);
+})();
+</script>
+<script>
+/* DETECTION TELEPHONE : active les ajustements de dimensions pour mobile */
+(function(){
+  var ua = navigator.userAgent || '';
+  var mobile = /Mobi|Android|iPhone|iPad|IEMobile|Opera Mini/i.test(ua);
+  var narrow = window.matchMedia ? window.matchMedia('(max-width: 899px)').matches : false;
+  if (mobile || narrow) document.documentElement.classList.add('is-phone');
+  else document.documentElement.classList.remove('is-phone');
 })();
 </script>
 </body>

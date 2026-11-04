@@ -338,6 +338,27 @@ html[data-wlv="print"] .v-print{display:block;width:min(340px,72vw);height:auto}
 .c-leg{stroke:#8d9aa6;stroke-width:3}
 .c-pulse{fill:#fff;filter:drop-shadow(0 0 7px #c9f31d) drop-shadow(0 0 14px #c9f31d)}
 </style>
+<style>
+/* ===== Adaptation affichage : téléphone ===== */
+html.is-phone .wrap{padding:0 16px}
+html.is-phone section{padding:18px 0}
+html.is-phone .hero{padding:14px 16px 20px;gap:14px}
+html.is-phone h1{font-size:clamp(1.6rem,8.2vw,2.5rem)}
+html.is-phone .hero .lead{font-size:1rem}
+html.is-phone .frame{width:min(100%,250px)}
+html.is-phone .badge{width:min(100%,250px)}
+html.is-phone .grid{grid-template-columns:repeat(2,1fr)}
+html.is-phone .card{padding:11px 12px}
+html.is-phone .skills{grid-template-columns:1fr}
+html.is-phone .shots{grid-template-columns:1fr;grid-template-rows:auto;gap:10px}
+html.is-phone .shot{height:auto;aspect-ratio:4/3}
+html.is-phone .duo{grid-template-columns:1fr}
+html.is-phone .steps{grid-template-columns:1fr}
+html.is-phone .contact .row{grid-template-columns:1fr}
+html.is-phone .cta{flex-direction:column;align-items:stretch}
+html.is-phone .chips{margin-top:12px}
+html.is-phone .tag{font-size:.8rem}
+</style>
 </head>
 <body>
 <div id="weldLoader" role="status" aria-live="polite" aria-label="Chargement du site">
@@ -987,6 +1008,16 @@ io.observe(document.querySelector('.skills'));
     }
     if (Array.isArray(list) && list.length) render(normalise(list));
   })();
+})();
+</script>
+<script>
+/* DETECTION TELEPHONE : active les ajustements de dimensions pour mobile */
+(function(){
+  var ua = navigator.userAgent || '';
+  var mobile = /Mobi|Android|iPhone|iPad|IEMobile|Opera Mini/i.test(ua);
+  var narrow = window.matchMedia ? window.matchMedia('(max-width: 899px)').matches : false;
+  if (mobile || narrow) document.documentElement.classList.add('is-phone');
+  else document.documentElement.classList.remove('is-phone');
 })();
 </script>
 </body>

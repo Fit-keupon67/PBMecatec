@@ -12,7 +12,28 @@ h1{font-size:1.9rem;margin:18px 0 6px}h2{font-size:1.1rem;margin:26px 0 8px;colo
 p,li{color:#e2e8de;font-size:.95rem}ul{padding-left:20px}
 .todo{background:rgba(255,176,32,.14);color:#ffcf75;padding:1px 6px;border-radius:5px}
 .back{display:inline-block;margin-bottom:8px;text-decoration:none}
-</style></head><body><main>
+</style><style>
+/* ===== Adaptation affichage : téléphone ===== */
+html.is-phone .wrap{padding:0 16px}
+html.is-phone section{padding:18px 0}
+html.is-phone .hero{padding:14px 16px 20px;gap:14px}
+html.is-phone h1{font-size:clamp(1.6rem,8.2vw,2.5rem)}
+html.is-phone .hero .lead{font-size:1rem}
+html.is-phone .frame{width:min(100%,250px)}
+html.is-phone .badge{width:min(100%,250px)}
+html.is-phone .grid{grid-template-columns:repeat(2,1fr)}
+html.is-phone .card{padding:11px 12px}
+html.is-phone .skills{grid-template-columns:1fr}
+html.is-phone .shots{grid-template-columns:1fr;grid-template-rows:auto;gap:10px}
+html.is-phone .shot{height:auto;aspect-ratio:4/3}
+html.is-phone .duo{grid-template-columns:1fr}
+html.is-phone .steps{grid-template-columns:1fr}
+html.is-phone .contact .row{grid-template-columns:1fr}
+html.is-phone .cta{flex-direction:column;align-items:stretch}
+html.is-phone .chips{margin-top:12px}
+html.is-phone .tag{font-size:.8rem}
+</style>
+</head><body><main>
 <a class="back" href="index.html">← Retour au site</a>
 <h1>Mentions légales</h1>
 <p>Dernière mise à jour : octobre 2026. Les passages surlignés sont à compléter avant la mise en ligne.</p>
@@ -42,4 +63,14 @@ Directeur de la publication : Pascal Bernier</p>
 
 <h2>Propriété intellectuelle</h2>
 <p>Les textes, photos et visuels de ce site sont la propriété de Pascal Bernier, sauf mention contraire. Toute reproduction sans autorisation écrite est interdite.</p>
-</main></body></html>
+</main><script>
+/* DETECTION TELEPHONE : active les ajustements de dimensions pour mobile */
+(function(){
+  var ua = navigator.userAgent || '';
+  var mobile = /Mobi|Android|iPhone|iPad|IEMobile|Opera Mini/i.test(ua);
+  var narrow = window.matchMedia ? window.matchMedia('(max-width: 899px)').matches : false;
+  if (mobile || narrow) document.documentElement.classList.add('is-phone');
+  else document.documentElement.classList.remove('is-phone');
+})();
+</script>
+</body></html>

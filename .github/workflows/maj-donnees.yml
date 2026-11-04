@@ -1,0 +1,55 @@
+name: Mise à jour des données
+
+on:
+  push:
+    paths:
+      - 'galerie/**'
+      - 'ventes/**'
+      - 'locations/**'
+      - 'outils/maj-donnees.js'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: maj-donnees
+  cancel-in-progress: true
+
+jobs:
+  maj:
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer le dépôt
+        uses: actions/checkout@v4
+
+      - name: Installer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Régénérer photos.json et donnees.js
+        run: node outils/maj-donnees.js
+
+      - name: Publier les fichiers générés
+        id: commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add galerie/photos.json donnees.js
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            git commit -m "Mise à jour automatique des données [skip ci]"
+            git push
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Demander une reconstruction de GitHub Pages
+        if: steps.commit.outputs.changed == 'true'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh api -X POST "repos/${{ github.repository }}/pages/builds" >/dev/null

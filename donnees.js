@@ -155,22 +155,6 @@ window.SITE_DATA = {
         "mecanique"
       ],
       "full": true
-    },
-    {
-      "src": "galerie/Vrac/2026-03-03 23_38_57-2139802884 (1.21.5-Java) - Seed Map Viewer for Minecraft.png",
-      "titre": "2026 03 03 23 38 57 2139802884 (1.21.5 Java)   Seed Map Viewer for Minecraft",
-      "cat": [
-        "vrac"
-      ],
-      "full": true
-    },
-    {
-      "src": "galerie/Vrac/minecraft-1-18-couche-minerai.jpg",
-      "titre": "Minecraft 1 18 couche minerai",
-      "cat": [
-        "vrac"
-      ],
-      "full": true
     }
   ],
   "ventes": "# Fichier des articles à vendre (dossier ventes/, à côté des photos).\n# Un bloc par article, séparés par une ligne vide ou ---\n# Mettre \"Disponible: non\" quand l'article est vendu.\n\nPhoto: Arbre à chat bois naturel 1.png\nTitre: Arbre à chat en bois fait main.\nPrix: 200 €\nDescription: Possibilité d'ajout de plateaux (30€ par plateau supplémentaire). Les roues et le chat ne sont pas fournis avec.\nDisponible: oui\n",

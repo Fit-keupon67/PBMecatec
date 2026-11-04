@@ -1,4 +1,7 @@
-# mettre-a-jour.ps1 : à lancer à la racine du site (clic droit > Exécuter avec PowerShell).
+# mettre-a-jour.ps1 : utile UNIQUEMENT pour prévisualiser le site en local (double-clic).
+# Sur GitHub Pages, plus besoin de le lancer : le workflow .github/workflows/maj-donnees.yml
+# régénère photos.json et donnees.js automatiquement à chaque ajout de photo ou de texte.
+# À lancer à la racine du site (clic droit > Exécuter avec PowerShell).
 # 1) Met à jour galerie/photos.json à partir des dossiers galerie/<catégorie>/ :
 #  - une photo présente dans un dossier est ajoutée (titre = nom du fichier) ;
 #  - une photo déjà connue garde son titre, ses dimensions et son cadrage ;

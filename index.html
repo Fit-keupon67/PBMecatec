@@ -244,6 +244,9 @@ body.navOpen{overflow:hidden}
 .navFilters a{font-size:.82rem;padding:8px 13px;border-radius:999px;border:1px solid var(--line);background:var(--bg2);color:var(--text);transition:border-color .2s,background .2s}
 .navFilters a:hover,.navFilters a:focus-visible{border-color:var(--lime);background:rgba(201,243,29,.10)}
 .navFilters a.all{background:var(--lime);border-color:var(--lime);color:#10140a;font-weight:500}
+.navFilters a{display:inline-flex;align-items:center;gap:6px}
+.navFilters a small{font-size:.7rem;font-weight:600;opacity:.65;font-variant-numeric:tabular-nums}
+.navFilters a.all small{opacity:.85}
 @media(max-width:900px){nav{flex-wrap:wrap;height:auto;padding:8px 0 10px;row-gap:8px}.menuBtn{width:44px;height:44px;padding:0;justify-content:center}.menuBtn span{display:none}}
 @media(max-width:1060px){nav ul{display:none}}
 .duo{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -896,6 +899,94 @@ io.observe(document.querySelector('.skills'));
   }
   requestAnimationFrame(frame);
   setTimeout(end,6000);
+})();
+</script>
+<script src="donnees.js"></script>
+<script>
+/* ===== Filtres de la galerie (page d'accueil) =====
+   La liste vient de galerie/photos.json : aucune catégorie n'est écrite en dur.
+   Ajouter un dossier dans galerie/ suffit pour voir apparaître la tuile.
+   Le nombre de photos est affiché à côté de chaque filtre, comme dans gallery.html. */
+(() => {
+  const box = document.getElementById('galFilters');
+  if (!box) return;
+  const LABELS = { soudure: 'Soudure', conception: 'Conception', 'impression-3d': 'Impression 3D', mecanique: 'Mécanique', electricite: 'Électricité', electronique: 'Réparation électronique', voiture: 'Prêt de voiture', applications: 'Applications' };
+  const ORDER = Object.keys(LABELS);
+  const slug = c => String(c).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim().replace(/[\s_]+/g, '-');
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const toLabel = id => LABELS[id] || id.replace(/-/g, ' ').replace(/^./, c => c.toUpperCase());
+
+  function normalise(list) {
+    return list.map(p => typeof p === 'string' ? { src: p } : p)
+      .filter(p => p && (p.src || p.image || p.file || p.photo || p.cat))
+      .map(p => {
+        let cat = p.cat !== undefined ? p.cat : (p.categorie !== undefined ? p.categorie : p.category);
+        cat = (Array.isArray(cat) ? cat : (cat ? [cat] : [])).map(slug).filter(c => c && c !== 'tout');
+        return { cat };
+      });
+  }
+
+  function render(photos) {
+    const n = id => photos.filter(p => id === 'tout' || p.cat.includes(id)).length;
+    const found = new Set();
+    photos.forEach(p => p.cat.forEach(c => found.add(c)));
+    const ids = [...ORDER.filter(i => found.has(i)), ...[...found].filter(i => !ORDER.includes(i)).sort()];
+    box.innerHTML = '<a class="all" href="gallery.html">Tout voir <small>' + n('tout') + '</small></a>' +
+      ids.map(id => '<a href="gallery.html#' + encodeURIComponent(id) + '">' + esc(toLabel(id)) + ' <small>' + n(id) + '</small></a>').join('');
+    const tile = document.querySelector('#galToggle small');
+    if (tile && photos.length) {
+      if (!tile.dataset.base) tile.dataset.base = tile.textContent;
+      tile.textContent = tile.dataset.base + ' · ' + photos.length + ' photo' + (photos.length > 1 ? 's' : '');
+    }
+  }
+
+  /* Repli : liste directe des dossiers via l'API GitHub si photos.json manque. */
+  async function fromGitHub() {
+    const m = location.hostname.match(/^([^.]+)\.github\.io$/i);
+    if (!m) return null;
+    const owner = m[1];
+    const seg = location.pathname.split('/').filter(Boolean);
+    const repo = seg.length ? seg[0] : owner + '.github.io';
+    const key = 'pbm_idxphotos_' + owner + '_' + repo;
+    try {
+      const c = JSON.parse(localStorage.getItem(key) || 'null');
+      if (c && Array.isArray(c.data) && Date.now() - c.at < 30 * 60 * 1000) return c.data;
+    } catch (e) {}
+    const headers = { Accept: 'application/vnd.github+json' };
+    const r = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/galerie', { headers });
+    if (!r.ok) return null;
+    const dirs = (await r.json()).filter(d => d.type === 'dir' && !['profil', 'logo'].includes(slug(d.name)));
+    const by = new Map();
+    await Promise.all(dirs.map(async d => {
+      const rr = await fetch(d.url, { headers });
+      if (!rr.ok) return;
+      const files = await rr.json();
+      const cat = slug(d.name);
+      files.filter(f => f.type === 'file' && /\.(jpe?g|png|webp|gif|avif)$/i.test(f.name)).forEach(f => {
+        const k = f.name.toLowerCase();
+        if (!by.has(k)) by.set(k, { cat: [] });
+        const e = by.get(k);
+        if (!e.cat.includes(cat)) e.cat.push(cat);
+      });
+    }));
+    const out = [...by.values()];
+    try { localStorage.setItem(key, JSON.stringify({ at: Date.now(), data: out })); } catch (e) {}
+    return out;
+  }
+
+  (async () => {
+    let list = null;
+    try {
+      const r = await fetch('galerie/photos.json?v=' + Date.now(), { cache: 'no-store' });
+      if (r.ok) list = await r.json();
+    } catch (e) {}
+    if (list && !Array.isArray(list) && Array.isArray(list.photos)) list = list.photos;
+    if (!Array.isArray(list) && window.SITE_DATA && Array.isArray(SITE_DATA.photos)) list = SITE_DATA.photos;
+    if (!Array.isArray(list) || !list.length) {
+      try { list = await fromGitHub(); } catch (e) {}
+    }
+    if (Array.isArray(list) && list.length) render(normalise(list));
+  })();
 })();
 </script>
 </body>

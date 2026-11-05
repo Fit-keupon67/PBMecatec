@@ -6,4 +6,4 @@ Photo: Arbre à chat bois naturel 1.png
 Titre: Arbre à chat en bois fait main.
 Prix: 200 €
 Description: Possibilité d'ajout de plateaux (30€ par plateau supplémentaire). Les roues et le chat ne sont pas fournis avec.
-Disponible: oui
+Disponible: non

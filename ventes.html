@@ -106,7 +106,9 @@ textarea{resize:vertical;min-height:70px}
 .ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .tool .bd{display:flex;flex-direction:column;gap:5px;padding:10px 12px 12px;flex:1}
 .tool h3{font-size:1rem}
-.tool p{color:var(--muted);font-size:.85rem}
+.tool p{color:var(--muted);font-size:.85rem;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.tool p.expanded{-webkit-line-clamp:unset;display:block;overflow:visible}
+.morebtn{background:none;border:0;color:var(--lime);font:inherit;font-size:.78rem;cursor:pointer;padding:0;margin-top:4px;text-decoration:underline;align-self:flex-start}
 .ft{margin-top:auto;padding-top:8px;display:flex;align-items:center;justify-content:space-between;gap:10px}
 .px{font-family:var(--head);font-weight:600;color:var(--lime)}
 .badge{font-size:.68rem;font-family:var(--head);font-weight:600;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:2px 8px}
@@ -386,6 +388,24 @@ function render() {
     grid.appendChild(a);
   });
 }
+
+  /* Texte long : tronque dans la tuile, complet au clic sur "Lire la suite" */
+  requestAnimationFrame(() => {
+    grid.querySelectorAll('.tool').forEach(tool => {
+      const para = tool.querySelector('.bd p');
+      if (para && para.scrollHeight > para.clientHeight + 1) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'morebtn';
+        btn.textContent = 'Lire la suite';
+        btn.addEventListener('click', () => {
+          const exp = para.classList.toggle('expanded');
+          btn.textContent = exp ? 'Reduire' : 'Lire la suite';
+        });
+        para.after(btn);
+      }
+    });
+  });
 
 const dlg = document.getElementById('dlg'), zoom = document.getElementById('zoom'), f = document.getElementById('f'), st = document.getElementById('st');
 let cur = null;

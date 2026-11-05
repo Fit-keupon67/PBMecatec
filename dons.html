@@ -216,7 +216,6 @@ html.is-phone .logo-img{max-width:none}
 html.is-phone .sideNav{width:min(290px,82vw);transform:translateX(-102%);visibility:hidden}
 html.is-phone .sideNav.open{transform:none;visibility:visible}
 html.is-phone .sideNav-close{display:block}
-html.is-phone .scrim{display:block}
 html.is-phone .railBrand{height:48px}
 html.is-phone .railBrand img{height:30px}
 html.is-phone .sideNav-body{gap:7px;padding:10px}
@@ -225,6 +224,12 @@ html.is-phone .navTile .ico{width:34px;height:34px;font-size:1rem}
 html.is-phone .navTile b{font-size:.88rem}
 html.is-phone .navTile small{font-size:.7rem}
 html.is-phone .navFilters a{font-size:.75rem;padding:6px 10px}
+</style>
+<style id="chk-css">
+.chk{display:flex;gap:8px;align-items:flex-start;font-size:.8rem;line-height:1.35;color:var(--muted,#bac5d0);text-align:left}
+.chk input[type=checkbox]{width:18px;height:18px;flex:none;margin:1px 0 0;padding:0;accent-color:var(--lime,#c9f31d)}
+.chk a{text-decoration:underline;color:var(--lime,#c9f31d)}
+html.is-phone .chk{font-size:.74rem}
 </style>
 </head>
 <body>
@@ -288,6 +293,8 @@ html.is-phone .navFilters a{font-size:.75rem;padding:6px 10px}
       <textarea name="msg" placeholder="Description et état de l'objet" required minlength="5" maxlength="1500" aria-label="Description et état de l'objet"></textarea>
       <input class="hp" name="site" tabindex="-1" autocomplete="off" aria-hidden="true">
       <label class="chk"><input type="checkbox" name="consent" required> J'accepte que ces informations me soient transmises pour répondre à ma proposition.</label>
+      <label class="chk"><input type="checkbox" name="consent_stockage" required> <span>J'ai lu les <a href="mentions.html#donnees" target="_blank" rel="noopener">mentions légales</a> et j'accepte que mes données (nom, e-mail, téléphone, message) soient enregistrées pour traiter ma demande, pendant 3 ans maximum.</span></label>
+      <label class="chk"><input type="checkbox" name="consent_google" required> <span>Je comprends que mes données sont traitées via les services de Google (Sheets, Apps Script, Gmail), ce qui peut impliquer un transfert hors de l'Union européenne.</span></label>
       <button class="btn main" type="submit">Envoyer ma proposition</button>
       <p class="st" id="st" role="status"></p>
       <p class="legal"><a href="mentions.html#donnees">En savoir plus sur l'utilisation de vos données</a></p>
@@ -326,7 +333,7 @@ f.addEventListener('submit', async e => {
   if (!API_URL) return say(st, "L'envoi en ligne n'est pas activé. Écrivez-moi à " + EMAIL + ".", false);
   btn.disabled = true; say(st, 'Envoi en cours…', true);
   try {
-    await envoyer('don', { nom: x.nom.value, email: x.email.value, objet: x.objet.value, ville: x.ville.value, msg: x.msg.value, site: x.site.value });
+    await envoyer('don', { nom: x.nom.value, email: x.email.value, objet: x.objet.value, ville: x.ville.value, msg: x.msg.value, site: x.site.value, consent: true });
     f.reset(); say(st, 'Merci ! Votre proposition est envoyée, je vous réponds rapidement.', true);
   } catch (err) { say(st, "Envoi impossible pour le moment. Écrivez-moi à " + EMAIL + ". (détail : " + err.message + ")", false); }
   btn.disabled = false;

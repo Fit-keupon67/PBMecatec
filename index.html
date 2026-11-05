@@ -447,7 +447,6 @@ html.is-phone .logo-img{max-width:none}
 html.is-phone .sideNav{width:min(290px,82vw);transform:translateX(-102%);visibility:hidden}
 html.is-phone .sideNav.open{transform:none;visibility:visible}
 html.is-phone .sideNav-close{display:block}
-html.is-phone .scrim{display:block}
 html.is-phone .railBrand{height:48px}
 html.is-phone .railBrand img{height:30px}
 html.is-phone .sideNav-body{gap:7px;padding:10px}
@@ -456,6 +455,27 @@ html.is-phone .navTile .ico{width:34px;height:34px;font-size:1rem}
 html.is-phone .navTile b{font-size:.88rem}
 html.is-phone .navTile small{font-size:.7rem}
 html.is-phone .navFilters a{font-size:.75rem;padding:6px 10px}
+</style>
+<style id="chk-css">
+.chk{display:flex;gap:8px;align-items:flex-start;font-size:.8rem;line-height:1.35;color:var(--muted,#bac5d0);text-align:left}
+.chk input[type=checkbox]{width:18px;height:18px;flex:none;margin:1px 0 0;padding:0;accent-color:var(--lime,#c9f31d)}
+.chk a{text-decoration:underline;color:var(--lime,#c9f31d)}
+html.is-phone .chk{font-size:.74rem}
+</style>
+<style id="phone-hero">
+/* Téléphone : même disposition que sur PC (texte à gauche, photo en haut à droite) */
+html.is-phone .hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(104px,33%);align-items:start;column-gap:12px;row-gap:0;text-align:left;padding:10px 14px 12px}
+html.is-phone .hero-pic{order:0;grid-column:2;grid-row:1;align-self:start;gap:6px}
+html.is-phone .hero-txt{grid-column:1;grid-row:1}
+html.is-phone .frame{width:100%;border-radius:16px}
+html.is-phone .frame::before{inset:-4px;border-radius:19px}
+html.is-phone .badge{width:100%;padding:5px 7px;font-size:.6rem;line-height:1.3;border-radius:10px}
+html.is-phone .badge strong{font-size:.7rem}
+html.is-phone .hero h1{font-size:clamp(1.15rem,6vw,1.6rem)}
+html.is-phone .hero .lead{font-size:.82rem;margin:6px 0 8px}
+html.is-phone .hero .cta{flex-direction:row;flex-wrap:wrap}
+html.is-phone .hero .cta .btn{padding:7px 11px;font-size:.78rem}
+html.is-phone .hero .chips span{font-size:.66rem;padding:2px 8px}
 </style>
 </head>
 <body>
@@ -648,6 +668,8 @@ html.is-phone .navFilters a{font-size:.75rem;padding:6px 10px}
         <textarea name="texte" placeholder="Votre avis (10 caractères minimum)" minlength="10" maxlength="600" required aria-label="Votre avis"></textarea>
         <input class="hp" name="site" tabindex="-1" autocomplete="off" aria-hidden="true">
         <label class="chk"><input type="checkbox" name="consent" required> J'accepte que mon prénom, ma note et mon avis soient publiés sur ce site après validation.</label>
+        <label class="chk"><input type="checkbox" name="consent_stockage" required> <span>J'ai lu les <a href="mentions.html#donnees" target="_blank" rel="noopener">mentions légales</a> et j'accepte que mon prénom, ma note et mon avis soient enregistrés pour être modérés.</span></label>
+        <label class="chk"><input type="checkbox" name="consent_google" required> <span>Je comprends que mes données sont traitées via les services de Google (Sheets, Apps Script, Gmail), ce qui peut impliquer un transfert hors de l'Union européenne.</span></label>
         <button class="btn main" type="submit">Envoyer mon avis</button>
         <p class="st" id="avisMsg" role="status"></p>
       </form>
@@ -733,9 +755,11 @@ html.is-phone .navFilters a{font-size:.75rem;padding:6px 10px}
             </select></div>
             <textarea name="msg" placeholder="Décrivez votre besoin" required minlength="5" maxlength="2000" aria-label="Votre message"></textarea>
             <input class="hp" name="site" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <label class="chk"><input type="checkbox" name="consent_stockage" required> <span>J'ai lu les <a href="mentions.html#donnees" target="_blank" rel="noopener">mentions légales</a> et j'accepte que mes données (nom, e-mail, téléphone, message) soient enregistrées pour traiter ma demande, pendant 3 ans maximum.</span></label>
+            <label class="chk"><input type="checkbox" name="consent_google" required> <span>Je comprends que mes données sont traitées via les services de Google (Sheets, Apps Script, Gmail), ce qui peut impliquer un transfert hors de l'Union européenne.</span></label>
             <button class="btn main" type="submit">Envoyer la demande</button>
             <p class="st" id="msg" role="status"></p>
-            <p class="legal">En envoyant ce formulaire, vous acceptez que ces informations me soient transmises pour répondre à votre demande. <a href="mentions.html#donnees">En savoir plus</a></p>
+            <p class="legal">Vous pouvez demander l'accès, la rectification ou la suppression de vos données, ou retirer votre consentement, à tout moment par e-mail. <a href="mentions.html#donnees">En savoir plus</a></p>
           </form>
         </div>
       </div>
@@ -857,7 +881,7 @@ document.getElementById('f').addEventListener('submit', async e => {
   if (!API_URL) return say(st, "L'envoi en ligne n'est pas encore activé. Écrivez-moi à " + EMAIL + ".", false);
   btn.disabled = true; say(st, 'Envoi en cours…', true);
   try {
-    await envoyer('devis', { nom: x.nom.value, email: x.email.value, tel: x.tel.value, sujet: x.sujet.value, msg: x.msg.value, site: x.site.value });
+    await envoyer('devis', { nom: x.nom.value, email: x.email.value, tel: x.tel.value, sujet: x.sujet.value, msg: x.msg.value, site: x.site.value, consent: true });
     f.reset(); say(st, 'Merci ! Votre demande est bien envoyée, je vous réponds rapidement.', true);
   } catch (err) { say(st, "Envoi impossible pour le moment. Écrivez-moi à " + EMAIL + ". (détail : " + err.message + ")", false); }
   btn.disabled = false;

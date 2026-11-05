@@ -192,7 +192,7 @@ html.is-phone h1{font-size:clamp(1.5rem,8.5vw,2.3rem)}
 html.is-phone nav{height:52px}
 html.is-phone nav .logo-img{height:40px}
 html.is-phone .callbar{bottom:0}
-html.is-phone .tools{grid-template-columns:repeat(3,1fr)}
+html.is-phone .tools{grid-template-columns:repeat(2,1fr)}
 html.is-phone .ph{aspect-ratio:16/9;max-height:80px}
 html.is-phone .tool .bd{padding:6px 8px 8px}
 html.is-phone .tool h3{font-size:.85rem}
@@ -297,6 +297,12 @@ html.is-phone .chk{font-size:.74rem}
 
 <dialog id="zoom" aria-label="Photo agrandie"><img alt=""><p></p></dialog>
 
+<dialog id="detail" aria-labelledby="detailTitle">
+  <div class="dhead"><h2 id="detailTitle"></h2><button class="x" type="button" id="detailClose" aria-label="Fermer">✕</button></div>
+  <img id="detailImg" alt="" style="width:100%;max-height:50vh;object-fit:contain;border-radius:12px;margin-bottom:12px">
+  <p id="detailDesc" style="color:var(--muted);line-height:1.5;margin-bottom:12px"></p>
+  <div class="ft" style="padding-top:0"><span class="px" id="detailPrice"></span><button class="btn main sm" type="button" id="detailAsk">Je suis intéressé</button></div>
+</dialog>
 <script src="donnees.js"></script>
 <script>
 /* ===== AJOUTER UN OUTIL À LOUER =====
@@ -379,6 +385,7 @@ function render() {
   loadEl.hidden = true; emptyEl.hidden = tools.length > 0; grid.innerHTML = '';
   tools.forEach((o, i) => {
     const a = document.createElement('article'); a.className = 'tool' + (o.dispo ? '' : ' off');
+    a.setAttribute('data-detail', i);
     a.innerHTML = `<button class="ph" type="button" data-zoom="${i}" aria-label="Agrandir la photo : ${esc(o.nom)}">${o.photo ? `<img src="${esc(o.photo)}" alt="${esc(o.nom)}" loading="lazy" decoding="async" onerror="this.parentNode.insertAdjacentHTML('afterbegin','🧰');this.remove()">` : '🧰'}</button>
       <div class="bd"><h3>${esc(o.nom)}</h3>${o.desc ? `<p>${esc(o.desc)}</p>` : ''}
       <div class="ft">${o.dispo ? (o.prix ? `<span class="px">${esc(o.prix)}</span>` : '<span class="badge">Tarif sur demande</span>') : '<span class="badge">Actuellement indisponible</span>'}
@@ -410,9 +417,32 @@ let cur = null;
 grid.addEventListener('click', e => {
   const z = e.target.closest('[data-zoom]'), q = e.target.closest('[data-ask]');
   if (z) { const o = tools[+z.dataset.zoom]; if (!o.photo) return; const im = zoom.querySelector('img'); im.src = o.photo; im.alt = o.nom; zoom.querySelector('p').textContent = o.nom; zoom.showModal(); }
+  const det = e.target.closest('[data-detail]');
+  if (det && !e.target.closest('button')) { openDetail(+det.dataset.detail); }
   if (q && !q.disabled) { cur = tools[+q.dataset.ask]; document.getElementById('dTitle').textContent = 'Louer : ' + cur.nom; st.textContent = ''; dlg.showModal(); }
 });
 zoom.addEventListener('click', () => zoom.close());
+
+const detail = document.getElementById('detail'), detailClose = document.getElementById('detailClose'),
+  detailImg = document.getElementById('detailImg'), detailTitle = document.getElementById('detailTitle'),
+  detailDesc = document.getElementById('detailDesc'), detailPrice = document.getElementById('detailPrice'),
+  detailAsk = document.getElementById('detailAsk');
+function openDetail(i) {
+  const o = tools[i];
+  if (!o) return;
+  detailTitle.textContent = o.nom;
+  if (o.photo) { detailImg.src = o.photo; detailImg.alt = o.nom; detailImg.style.display = ''; }
+  else { detailImg.style.display = 'none'; }
+  detailDesc.textContent = o.desc || '';
+  detailPrice.textContent = o.dispo ? (o.prix || 'Prix sur demande') : 'Vendu / indisponible';
+  detailAsk.disabled = !o.dispo;
+  detailAsk.textContent = o.dispo ? 'Je suis intéressé' : 'Indisponible';
+  detailAsk.onclick = () => { detail.close(); if (o.dispo) { cur = o; document.getElementById('dTitle').textContent = 'Acheter : ' + o.nom; st.textContent = ''; dlg.showModal(); } };
+  detail.showModal();
+}
+detailClose.onclick = () => detail.close();
+detail.addEventListener('click', e => { if (e.target === detail) detail.close(); });
+
 document.getElementById('dx').onclick = () => dlg.close();
 dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
 

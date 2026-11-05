@@ -380,7 +380,8 @@ html.is-phone .badge{width:min(100%,250px)}
 html.is-phone .grid{grid-template-columns:repeat(2,1fr)}
 html.is-phone .card{padding:11px 12px}
 html.is-phone .skills{grid-template-columns:1fr}
-html.is-phone .shots{grid-template-columns:1fr;grid-template-rows:auto;gap:10px}
+html.is-phone .shots{grid-template-columns:repeat(2,1fr);grid-template-rows:auto;gap:8px}
+html.is-phone .shot{height:auto;aspect-ratio:4/3}
 html.is-phone .shot{height:auto;aspect-ratio:4/3}
 html.is-phone .duo{grid-template-columns:1fr}
 html.is-phone .steps{grid-template-columns:1fr}
@@ -679,7 +680,7 @@ html.is-phone .hero .chips span{font-size:.66rem;padding:2px 8px}
   <section id="realisations">
     <div class="wrap">
       <div class="sec-head"><h2>Mes créations</h2><p>Conçues et fabriquées dans mon atelier.</p></div>
-      <div class="shots">
+      <div class="shots" id="shots">
         <figure class="shot"><img src="galerie/soudure/drift-trike.webp" alt="Drift trike thermique" loading="lazy"><figcaption>Drift trike thermique</figcaption></figure>
         <figure class="shot"><img src="galerie/soudure/chopper-electrique.webp" alt="Chopper électrique" loading="lazy"><figcaption>Chopper électrique</figcaption></figure>
         <figure class="shot"><img src="galerie/soudure/trio.webp" alt="Trois trikes et choppers" loading="lazy"><figcaption>La gamme</figcaption></figure>
@@ -1059,14 +1060,33 @@ io.observe(document.querySelector('.skills'));
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const toLabel = id => LABELS[id] || id.replace(/-/g, ' ').replace(/^./, c => c.toUpperCase());
 
+  /* Catégorie utilisée pour les 3 photos de la section "Mes créations" (modifiable) */
+  const SHOTS_CAT = 'soudure';
+  const SHOTS_N = 3;
+
   function normalise(list) {
     return list.map(p => typeof p === 'string' ? { src: p } : p)
       .filter(p => p && (p.src || p.image || p.file || p.photo || p.cat))
       .map(p => {
+        let src = String(p.src || p.image || p.file || p.photo).replace(/^\.?\//, '');
         let cat = p.cat !== undefined ? p.cat : (p.categorie !== undefined ? p.categorie : p.category);
         cat = (Array.isArray(cat) ? cat : (cat ? [cat] : [])).map(slug).filter(c => c && c !== 'tout');
-        return { cat };
+        const titre = p.titre || p.title || src.split('/').pop().replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ').trim();
+        return { src, titre: titre.charAt(0).toUpperCase() + titre.slice(1), cat };
       });
+  }
+
+  /* Remplit la section "Mes créations" depuis la galerie (modifiable via SHOTS_CAT / SHOTS_N) */
+  function renderShots(photos) {
+    const box = document.getElementById('shots');
+    if (!box) return;
+    const pool = photos.filter(p => p.cat.includes(SHOTS_CAT));
+    const picks = (pool.length ? pool : photos).slice(0, SHOTS_N);
+    if (!picks.length) return;
+    box.innerHTML = picks.map(p => {
+      const src = p.src.split('/').map(encodeURIComponent).join('/');
+      return '<figure class="shot"><img src="' + esc(src) + '" alt="' + esc(p.titre) + '" loading="lazy"><figcaption>' + esc(p.titre) + '</figcaption></figure>';
+    }).join('');
   }
 
   function render(photos) {
@@ -1128,7 +1148,7 @@ io.observe(document.querySelector('.skills'));
     if (!Array.isArray(list) || !list.length) {
       try { list = await fromGitHub(); } catch (e) {}
     }
-    if (Array.isArray(list) && list.length) render(normalise(list));
+    if (Array.isArray(list) && list.length) { const N = normalise(list); render(N); renderShots(N); }
   })();
 })();
 </script>

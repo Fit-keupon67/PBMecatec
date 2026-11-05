@@ -4,7 +4,8 @@ window.SITE_DATA = {
       "src": "galerie/applications/app-gestion-outils-multi.webp",
       "titre": "App gestion outils multi",
       "cat": [
-        "applications"
+        "applications",
+        "electronique"
       ],
       "full": true
     },
